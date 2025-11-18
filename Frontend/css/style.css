@@ -1,0 +1,114 @@
+:root {
+    --cor-fundo-principal: #151218; /* Preto bem escuro (base da Nation) */
+    --cor-ffundo-secundario: #1D1F23; /* Tom um pouco mais claro para cards/forms */
+    --cor-texto-principal: #E0E0E0;   /* Cinza claro para texto geral */
+    --cor-texto-secundario: #A0A0A0; /* Cinza mais escuro para labels */
+    --cor-primaria-roxo: #7826EB;     /* Roxo vibrante para botões e destaques */
+    --cor-primaria-roxo-hover: #5E1DB8; /* Roxo um pouco mais escuro para hover */
+    --cor-borda-input: #49316B;       /* Roxo escuro para borda de inputs */
+}
+
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte limpa */
+    background-color: var(--cor-fundo-principal);
+    color: var(--cor-texto-principal);
+    display: flex; /* Para centralizar o conteúdo principal */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    min-height: 100vh; /* Ocupa 100% da altura da viewport */
+}
+
+
+main {
+    background-color: var(--cor-fundo-secundario);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); /* Sombra suave */
+    width: 100%;
+    max-width: 450px; /* Largura máxima para formulários */
+    text-align: center; /* Centraliza títulos */
+}
+
+
+
+h1 {
+    color: var(--cor-texto-principal);
+    margin-bottom: 30px;
+    font-size: 2.4em;
+    font-weight: 1000;
+    text-align: center; 
+}
+/* 6. Estilo dos Formulários (form) */
+form div { /* Cada div dentro do form que contém label e input */
+    margin-bottom: 20px;
+    text-align: left; /* Alinha labels e inputs à esquerda */
+}
+
+label {
+    display: block; /* Faz a label ocupar sua própria linha */
+    margin-bottom: 8px;
+    color: var(--cor-texto-secundario);
+    font-size: 0.9em;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="tel"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--cor-borda-input);
+    border-radius: 5px;
+    background-color: var(--cor-fundo-principal); /* Fundo mais escuro para inputs */
+    color: var(--cor-texto-principal);
+    font-size: 1em;
+    outline: none; /* Remove a borda azul de foco padrão do navegador */
+    transition: border-color 0.3s ease; /* Transição suave na borda */
+    box-sizing: border-box; /* Garante que padding não afete a largura final */
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+input[type="tel"]:focus {
+    border-color: var(--cor-primaria-roxo); /* Borda roxa ao focar */
+}
+
+/* 7. Estilo do Botão */
+button[type="submit"] {
+    background-color: var(--cor-primaria-roxo);
+    color: #FFFFFF; /* Texto branco */
+    padding: 15px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Transição suave na cor de fundo */
+    margin-top: 20px;
+    width: 100%; /* Botão ocupa a largura total */
+}
+
+button[type="submit"]:hover {
+    background-color: var(--cor-primaria-roxo-hover);
+}
+
+/* Ajustes para links (se tivermos, como "Já tem conta? Faça login") */
+a {
+    color: var(--cor-primaria-roxo);
+    text-decoration: none; /* Remove sublinhado padrão */
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+p.login-link {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: var(--cor-texto-secundario);
+}

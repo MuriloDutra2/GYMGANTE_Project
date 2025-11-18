@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.gymgante.gymgante_api.controller.dto.DadosCadastroUsuario;
+import br.com.gymgante.gymgante_api.controller.dto.DadosLoginUsuario;
 import br.com.gymgante.gymgante_api.domain.Usuario;
 import br.com.gymgante.gymgante_api.repository.UsuarioRepository;
 
@@ -42,6 +43,42 @@ public class UsuarioService {
         // 4. Dar a ordem para o Repositório salvar no banco
         // O método .save() vai executar um "INSERT INTO tb_usuario..."
         return usuarioRepository.save(novoUsuario);
+    }
+
+    // ... (o método cadastrarUsuario e as injeções @Autowired já estão aqui em cima) ...
+
+    // --- Nosso segundo método de Lógica de Negócio ---
+    public Usuario autenticarUsuario(DadosLoginUsuario dados) {
+        
+        Usuario usuario;
+
+        // 1. Verificar se o loginIdentifier é um email ou CPF
+        // (Isso é uma lógica de negócio simples, perfeita para o Service)
+        if (dados.loginIdentifier().contains("@")) {
+            // É um email, busca por email
+            usuario = usuarioRepository.findByEmail(dados.loginIdentifier());
+        } else {
+            // Não é um email, assume que é CPF e busca por CPF
+            usuario = usuarioRepository.findByCpf(dados.loginIdentifier());
+        }
+
+        // 2. Verificar se o usuário foi encontrado
+        if (usuario == null) {
+            // Usuário não encontrado no banco.
+            throw new RuntimeException("Credenciais inválidas");
+        }
+
+        // 3. Se o usuário foi encontrado, VERIFICAR A SENHA
+        //    Usamos o passwordEncoder.matches() para comparar:
+        //    A senha PURA que o usuário digitou (dados.senha())
+        //    com a senha CRIPTOGRAFADA que está no banco (usuario.getSenhaHash())
+        if (passwordEncoder.matches(dados.senha(), usuario.getSenhaHash())) {
+            // Senha correta! Retorna o usuário encontrado.
+            return usuario;
+        } else {
+            // Senha incorreta.
+            throw new RuntimeException("Credenciais inválidas");
+        }
     }
 
 }

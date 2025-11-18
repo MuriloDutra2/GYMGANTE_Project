@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.gymgante.gymgante_api.controller.dto.DadosCadastroUsuario;
+import br.com.gymgante.gymgante_api.controller.dto.DadosLoginUsuario;
 import br.com.gymgante.gymgante_api.domain.Usuario;
 import br.com.gymgante.gymgante_api.service.UsuarioService;
 
 @RestController // Diz ao Spring que esta classe é um Controlador de API REST
 @RequestMapping("/api/usuarios") // Define o prefixo do URL para todos os métodos desta classe
-@CrossOrigin(origins = "*") // <-- IMPORTANTE: Permite que nosso front-end (em outro domínio) chame esta API
+
 public class UsuarioController {
 
     @Autowired // Injeta o "cérebro" (o serviço)
@@ -34,6 +35,22 @@ public class UsuarioController {
         // 3. Responde ao front-end com um "HTTP 200 OK"
         // e envia de volta o usuário que acabou de ser salvo no banco
         return ResponseEntity.ok(usuarioSalvo);
+    }
+
+    // ... (o método cadastrar e o @Autowired do serviço já estão aqui em cima) ...
+
+    // Define que este método responde a requisições POST no URL /api/usuarios/login
+    @PostMapping("/login")
+    public ResponseEntity<Usuario> login(@RequestBody DadosLoginUsuario dados) {
+        
+        // 1. Tenta autenticar o usuário usando o serviço
+        // Se as credenciais estiverem erradas, o service vai disparar uma 
+        // exceção, e o Spring vai retornar um Erro 500 (que o front-end vai pegar no .catch())
+        Usuario usuarioAutenticado = usuarioService.autenticarUsuario(dados);
+        
+        // 2. Se a autenticação deu certo, retorna "HTTP 200 OK"
+        // com os dados do usuário logado.
+        return ResponseEntity.ok(usuarioAutenticado);
     }
 
 }

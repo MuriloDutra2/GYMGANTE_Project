@@ -31,3 +31,16 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignorar arquivos de compilação do Java
+*.class
+
+# Ignorar logs
+*.log
+
+# Ignorar pasta de configurações do VS Code (se quiser que cada dev tenha a sua)
+.vscode/
+
+# Ignorar pasta target do Maven (MUITO IMPORTANTE - já deve ter, mas confira)
+target/
+**/target/

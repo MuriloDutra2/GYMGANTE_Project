@@ -10,7 +10,17 @@ import jakarta.persistence.Table;
 import java.time.LocalDate; // O tipo moderno do Java para datas
 import lombok.Data; // A mágica do Lombok
 
-@Data // Anotação do Lombok: Cria Getters, Setters, toString, etc. (automático!)
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+
+@Getter // Adiciona só Getters
+@Setter // Adiciona só Setters
+@NoArgsConstructor // Adiciona construtor vazio (JPA precisa)
+@AllArgsConstructor // Adiciona construtor com todos os campos
+@EqualsAndHashCode(of = "id")
 @Entity // Diz ao JPA: "Esta classe é uma entidade de banco de dados"
 @Table(name = "tb_usuario") // Diz ao JPA: "O nome da tabela no banco será 'tb_usuario'"
 public class Usuario {
@@ -38,9 +48,6 @@ public class Usuario {
     @Column(length = 15) // Define o tamanho máximo
     private String telefone;
 
-    // Construtor vazio (necessário para o JPA)
-    public Usuario() {
-    }
 
     // O Lombok (@Data) cuida de todos os Getters e Setters
     // Não precisamos escrever public String getEmail() { ... }
