@@ -3,82 +3,90 @@ package br.com.gymgante.gymgante_api.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.gymgante.gymgante_api.controller.dto.DadosCadastroUsuario;
 import br.com.gymgante.gymgante_api.controller.dto.DadosLoginUsuario;
+import br.com.gymgante.gymgante_api.controller.dto.UsuarioResponseDto; // ⭐ NOVO IMPORT
 import br.com.gymgante.gymgante_api.domain.Usuario;
 import br.com.gymgante.gymgante_api.repository.UsuarioRepository;
 
-@Service //Esta é uma classe de Serviço (lógica de negócio)"
+@Service
 public class UsuarioService {
 
-    // --- Injeção de Dependência ---
-    // Pedimos ao Spring para "injetar" as ferramentas que precisamos
-
-    @Autowired // "Spring, por favor, me dê o Repositório de Usuário que você criou"
+    @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Autowired // "Spring, me dê aquele PasswordEncoder (BCrypt) que definimos no SecurityConfig"
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // --- Nosso primeiro método de Lógica de Negócio ---
-    public Usuario cadastrarUsuario(DadosCadastroUsuario dados) {
+    /**
+     * Cadastra um novo usuário e retorna um DTO (NÃO a entidade).
+     */
+    @Transactional
+    public UsuarioResponseDto cadastrarUsuario(DadosCadastroUsuario dados) {
         
         // 1. Criptografar a senha
-        // Pegamos a senha pura (ex: "123456") do DTO
-        // e usamos o BCrypt para transformá-la em um hash (ex: "$2a$10$...")
         String senhaCriptografada = passwordEncoder.encode(dados.senha());
 
-        // 2. Converter o DTO (dados de entrada) para uma Entidade (dados de banco)
+        // 2. Criar a entidade
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNomeCompleto(dados.nomeCompleto());
         novoUsuario.setEmail(dados.email());
         novoUsuario.setCpf(dados.cpf());
         novoUsuario.setDataNascimento(dados.dataNascimento());
         novoUsuario.setTelefone(dados.telefone());
-        
-        // 3. Salvar a SENHA CRIPTOGRAFADA na entidade
-        novoUsuario.setSenhaHash(senhaCriptografada); // <<-- MUITO IMPORTANTE!
+        novoUsuario.setSenhaHash(senhaCriptografada);
 
-        // 4. Dar a ordem para o Repositório salvar no banco
-        // O método .save() vai executar um "INSERT INTO tb_usuario..."
-        return usuarioRepository.save(novoUsuario);
+        // 3. Salvar no banco
+        Usuario usuarioSalvo = usuarioRepository.save(novoUsuario);
+
+        // 4. ⭐ CONVERTER PARA DTO ANTES DE RETORNAR (NUNCA retorne a entidade!)
+        return converterParaDto(usuarioSalvo);
     }
 
-    // ... (o método cadastrarUsuario e as injeções @Autowired já estão aqui em cima) ...
-
-    // --- Nosso segundo método de Lógica de Negócio ---
-    public Usuario autenticarUsuario(DadosLoginUsuario dados) {
+    /**
+     * Autentica um usuário e retorna um DTO (NÃO a entidade).
+     */
+    @Transactional(readOnly = true)
+    public UsuarioResponseDto autenticarUsuario(DadosLoginUsuario dados) {
         
         Usuario usuario;
 
-        // 1. Verificar se o loginIdentifier é um email ou CPF
-        // (Isso é uma lógica de negócio simples, perfeita para o Service)
+        // 1. Buscar por email ou CPF
         if (dados.loginIdentifier().contains("@")) {
-            // É um email, busca por email
             usuario = usuarioRepository.findByEmail(dados.loginIdentifier());
         } else {
-            // Não é um email, assume que é CPF e busca por CPF
             usuario = usuarioRepository.findByCpf(dados.loginIdentifier());
         }
 
-        // 2. Verificar se o usuário foi encontrado
+        // 2. Verificar se encontrou
         if (usuario == null) {
-            // Usuário não encontrado no banco.
             throw new RuntimeException("Credenciais inválidas");
         }
 
-        // 3. Se o usuário foi encontrado, VERIFICAR A SENHA
-        //    Usamos o passwordEncoder.matches() para comparar:
-        //    A senha PURA que o usuário digitou (dados.senha())
-        //    com a senha CRIPTOGRAFADA que está no banco (usuario.getSenhaHash())
-        if (passwordEncoder.matches(dados.senha(), usuario.getSenhaHash())) {
-            // Senha correta! Retorna o usuário encontrado.
-            return usuario;
-        } else {
-            // Senha incorreta.
+        // 3. Verificar senha
+        if (!passwordEncoder.matches(dados.senha(), usuario.getSenhaHash())) {
             throw new RuntimeException("Credenciais inválidas");
         }
+
+        // 4. ⭐ RETORNAR DTO, NÃO A ENTIDADE
+        return converterParaDto(usuario);
     }
 
+    /**
+     * Método privado para converter Usuario → UsuarioResponseDto.
+     * Centraliza a lógica de conversão em um único lugar.
+     */
+    private UsuarioResponseDto converterParaDto(Usuario usuario) {
+        return new UsuarioResponseDto(
+            usuario.getId(),
+            usuario.getNomeCompleto(),
+            usuario.getEmail(),
+            usuario.getCpf(),
+            usuario.getDataNascimento(),
+            usuario.getTelefone()
+            // ⚠️ senhaHash NÃO é incluído - segurança!
+        );
+    }
 }
