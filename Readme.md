@@ -16,8 +16,8 @@ O **GYMGATE** é uma plataforma web full-stack que revoluciona a prescrição de
 
 *(Coloque aqui prints das telas: Login, Anamnese e a Tela de Treino Gerado)*
 <div style="display: flex; gap: 10px;">
-  <img src="caminho/para/print-login.png" width="300" />
-  <img src="caminho/para/print-treino.png" width="300" />
+  <img src="login.png" width="300" />
+  <img src="treinos.png" width="300" />
 </div>
 
 ---
