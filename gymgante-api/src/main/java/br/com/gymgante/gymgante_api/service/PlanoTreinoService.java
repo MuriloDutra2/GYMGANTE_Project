@@ -61,7 +61,7 @@ String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-fla
 
             System.out.println("🔄 Processando resposta JSON...");
             JsonNode root = objectMapper.readTree(response.getBody());
-            String planoTreino = root.path("candidates")
+            String respostaGemini = root.path("candidates")
                     .get(0)
                     .path("content")
                     .path("parts")
@@ -69,11 +69,35 @@ String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-fla
                     .path("text")
                     .asText();
 
-            System.out.println("✅ Plano extraído com sucesso!");
-            System.out.println("📋 Tamanho do plano: " + planoTreino.length() + " caracteres");
+            System.out.println("✅ Resposta do Gemini extraída!");
+            System.out.println("📋 Tamanho da resposta: " + respostaGemini.length() + " caracteres");
+            
+            // Limpar a resposta (remover markdown code blocks se houver)
+            String jsonLimpo = respostaGemini.trim();
+            if (jsonLimpo.startsWith("```json")) {
+                jsonLimpo = jsonLimpo.substring(7);
+            }
+            if (jsonLimpo.startsWith("```")) {
+                jsonLimpo = jsonLimpo.substring(3);
+            }
+            if (jsonLimpo.endsWith("```")) {
+                jsonLimpo = jsonLimpo.substring(0, jsonLimpo.length() - 3);
+            }
+            jsonLimpo = jsonLimpo.trim();
+            
+            // Validar se é JSON válido
+            try {
+                objectMapper.readTree(jsonLimpo);
+                System.out.println("✅ JSON válido!");
+            } catch (Exception e) {
+                System.out.println("⚠️ Resposta não é JSON válido, retornando como texto");
+                // Se não for JSON válido, retorna como estava antes (compatibilidade)
+                return respostaGemini;
+            }
+            
             System.out.println("🤖 === FIM GERAÇÃO DE PLANO ===");
             
-            return planoTreino;
+            return jsonLimpo;
 
         } catch (Exception e) {
             System.out.println("❌ ERRO ao gerar plano:");
@@ -107,19 +131,38 @@ String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-fla
             - Frequência: %s
             - Nível: %s
             
-            **Instruções:**
-            1. Organize o treino por dias da semana (ex: Segunda, Terça, etc.)
-            2. Para cada dia, liste os exercícios com:
-               - Nome do exercício
-               - Séries x Repetições
-               - Tempo de descanso
-               - Observações técnicas importantes
-            3. Inclua aquecimento e alongamento
-            4. Adicione dicas de progressão
-            5. Seja específico e prático
+            **IMPORTANTE: Você DEVE responder APENAS com um JSON válido, sem texto adicional antes ou depois.**
             
-            **Formato de resposta:**
-            Use markdown para organizar bem o plano. Inclua emojis para tornar mais visual.
+            **Formato JSON obrigatório:**
+            {
+              "titulo": "Nome do plano (ex: 'Treino para Ganho de Massa')",
+              "descricao": "Breve descrição do plano",
+              "dias": [
+                {
+                  "nome": "Treino A (ou nome do dia, ex: Segunda-feira)",
+                  "grupoMuscular": "Grupo muscular focado (ex: Pernas, Peito, Costas e Bíceps)",
+                  "exercicios": [
+                    {
+                      "nome": "Nome do exercício",
+                      "series": "Número de séries (ex: 4x)",
+                      "repeticoes": "Faixa de repetições (ex: 10-12)",
+                      "descanso": "Tempo de descanso (ex: 60-90 segundos)",
+                      "observacoes": "Observações técnicas (opcional)"
+                    }
+                  ],
+                  "observacoes": "Observações gerais do dia (opcional)"
+                }
+              ]
+            }
+            
+            **Instruções:**
+            1. Organize o treino por dias (Treino A, B, C ou dias da semana)
+            2. Para cada dia, inclua 4-6 exercícios principais
+            3. Cada exercício deve ter: nome, séries, repetições, descanso e observações
+            4. Seja específico e prático
+            5. Use nomes de exercícios comuns de academia
+            
+            **Responda APENAS com o JSON, sem markdown, sem explicações, sem texto adicional.**
             """;
 
         String instrucaoObjetivo = switch (objetivo) {

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - GYMGATE</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/forms.css">
+</head>
+<body>
+
+    <main>
+        <h1>Acesse sua Conta</h1>
+
+        <form id="form-login">
+            
+            <div>
+                <label for="loginIdentifier">Email ou CPF:</label>
+                
+                <input type="text" id="loginIdentifier" name="loginIdentifier" required>
+            </div>
+            
+            <div>
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" required>
+            </div>
+
+            <button type="submit">Entrar</button>
+
+        </form>
+
+        <p class="login-link">
+    Não tem uma conta? <a href="cadastro.html">Cadastre-se aqui</a>.
+</p>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(26, 13, 46, 0.95);
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        flex-direction: column;
+        gap: 20px;
+    ">
+        <div class="loading-spinner" style="
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(139, 92, 246, 0.3);
+            border-top: 4px solid #8B5CF6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        "></div>
+        <h3 style="color: #E0E0E0; font-size: 1.2em; margin: 0;">🔍 Verificando seu treino...</h3>
+        <p style="color: #B8A9D9; font-size: 0.9em; margin: 0;">Aguarde enquanto verificamos seus dados</p>
+    </div>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/teste-anamnese.js"></script>
+
+</body>
+</html>

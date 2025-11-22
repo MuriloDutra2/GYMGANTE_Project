@@ -1,5 +1,6 @@
 package br.com.gymgante.gymgante_api.controller;
 
+import br.com.gymgante.gymgante_api.dto.AnamneseComTreinoDto;
 import br.com.gymgante.gymgante_api.dto.DadosCadastroAnamnese;
 import br.com.gymgante.gymgante_api.dto.DadosPlanoTreino;
 import br.com.gymgante.gymgante_api.service.AnamneseService;
@@ -47,6 +48,20 @@ public class AnamneseController {
             }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new DadosPlanoTreino("ERRO", "Ocorreu um erro inesperado no servidor."));
+        }
+    }
+
+    // Endpoint GET - Buscar anamnese e treino do usuário
+    @GetMapping("/{usuarioId}")
+    public ResponseEntity<AnamneseComTreinoDto> buscarAnamneseETreino(@PathVariable Long usuarioId) {
+        try {
+            AnamneseComTreinoDto resultado = anamneseService.buscarAnamneseETreino(usuarioId);
+            return ResponseEntity.ok(resultado);
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("não encontrad")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

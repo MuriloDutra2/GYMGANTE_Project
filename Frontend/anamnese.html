@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anamnese - GYMGATE</title>
+    <link rel="stylesheet" href="css/anamnese.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💪 Crie Seu Treino Personalizado</h1>
+            <p>Responda às perguntas abaixo para gerar seu plano de treino com IA.</p>
+        </header>
+
+        <form id="form-anamnese">
+            <div class="form-group">
+                <label for="objetivo">🎯 Qual seu objetivo principal?</label>
+                <select id="objetivo" name="objetivo" required>
+                    <option value="">Selecione...</option>
+                    <option value="Ganho de Massa Muscular">Ganho de Massa Muscular</option>
+                    <option value="Perda de Gordura">Perda de Gordura</option>
+                    <option value="Definição Muscular">Definição Muscular</option>
+                    <option value="Hipertrofia">Hipertrofia</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="diasPorSemana">📅 Quantos dias por semana você treinaria?</label>
+                <select id="diasPorSemana" name="diasPorSemana" required>
+                    <option value="">Selecione...</option>
+                    <option value="3x por semana">3x por semana</option>
+                    <option value="4x por semana">4x por semana</option>
+                    <option value="5x por semana">5x por semana</option>
+                    <option value="6x por semana">6x por semana</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="nivel">📊 Qual seu nível de experiência?</label>
+                <select id="nivel" name="nivel" required>
+                    <option value="">Selecione...</option>
+                    <option value="Iniciante">Iniciante</option>
+                    <option value="Intermediário">Intermediário</option>
+                    <option value="Avançado">Avançado</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="temRestricao" name="temRestricao">
+                    <span>🩺 Tenhos lesão/restrição médica</span>
+                </label>
+            </div>
+
+            <button type="submit" id="btn-submit">🤖 Gerar Treino com IA</button>
+        </form>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h3>🤖 Gerando seu treino personalizado...</h3>
+            <p>Isso pode levar até 10 segundos. Aguarde!</p>
+        </div>
+    </div>
+
+    <script src="js/anamnese.js"></script>
+</body>
+</html>

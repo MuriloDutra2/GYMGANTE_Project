@@ -5,8 +5,11 @@ package br.com.gymgante.gymgante_api.exeception;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.stream.Collectors;
 
 // Esta anotação transforma a classe em um "conselheiro" global
 // para todos os @RestControllers.
@@ -63,6 +66,20 @@ public ResponseEntity<ErrorResponseDto> handleRuntimeException(RuntimeException 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST) // Status 400
                 .body(new ErrorResponseDto(mensagemErro));
+    }
+
+    // Método 3: Tratar erros de validação (@Valid)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDto> handleValidationException(MethodArgumentNotValidException ex) {
+        String mensagem = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+        
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponseDto("Erro de validação: " + mensagem));
     }
 
 }

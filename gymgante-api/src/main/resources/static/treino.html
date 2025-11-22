@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu Treino - GYMGATE</title>
+    <link rel="stylesheet" href="css/treino.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/" class="back-btn">← Voltar ao início</a>
+            <h1>💪 Seu Treino Personalizado</h1>
+            <button id="btn-novo-treino" class="btn-secondary">🔄 Gerar Novo Treino</button>
+        </div>
+        <div class="user-info">
+            <p><strong>Nome:</strong> <span id="user-nome">-</span></p>
+            <p><strong>Objetivo:</strong> <span id="user-objetivo">-</span></p>
+            <p><strong>Frequência:</strong> <span id="user-dias">-</span></p>
+            <p><strong>Nível:</strong> <span id="user-nivel">-</span></p>
+        </div>
+    </header>
+
+    <div class="loading-overlay" id="loading">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h3>🏋️ Carregando treino...</h3>
+            <p>Aguarde enquanto preparamos seu treino personalizado.</p>
+        </div>
+    </div>
+
+    <main id="treino-container">
+        <!-- Treino será renderizado aqui -->
+    </main>
+
+    <!-- Modal de Confirmação -->
+    <div id="modal-confirm" class="modal hidden">
+        <div class="modal-content">
+            <h3>⚠️ Tem certeza?</h3>
+            <p>Ao gerar um novo treino, o treino atual será substituído. Esta ação não pode ser desfeita.</p>
+            <div class="modal-actions">
+                <button id="btn-cancel" class="btn-secondary">Cancelar</button>
+                <button id="btn-confirm" class="btn-primary">Sim, Gerar Novo Treino</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/treino.js"></script>
+</body>
+</html>

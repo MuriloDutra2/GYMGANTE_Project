@@ -2,6 +2,7 @@ package br.com.gymgante.gymgante_api.service;
 
 import br.com.gymgante.gymgante_api.domain.Anamnese;
 import br.com.gymgante.gymgante_api.domain.Usuario;
+import br.com.gymgante.gymgante_api.dto.AnamneseComTreinoDto;
 import br.com.gymgante.gymgante_api.dto.DadosCadastroAnamnese;
 import br.com.gymgante.gymgante_api.dto.DadosPlanoTreino;
 import br.com.gymgante.gymgante_api.repository.AnamneseRepository;
@@ -130,6 +131,76 @@ anamnese.setTemRestricao(dados.temRestricao());
             System.out.println("✅ Novo plano gerado com sucesso!");
 
             return new DadosPlanoTreino("PLANO_TREINO", planoGerado);
+
+        } catch (Exception e) {
+            System.out.println("❌ EXCEÇÃO CAPTURADA:");
+            System.out.println("   Mensagem: " + e.getMessage());
+            System.out.println("   Tipo: " + e.getClass().getName());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * Busca a anamnese do usuário e gera o treino correspondente.
+     * Usado quando o usuário faz login e precisa ver seu treino.
+     */
+    @Transactional(readOnly = true)
+    public AnamneseComTreinoDto buscarAnamneseETreino(Long usuarioId) {
+        System.out.println("🔍 INÍCIO - buscarAnamneseETreino");
+        System.out.println("🔍 Usuário ID: " + usuarioId);
+
+        try {
+            // Buscar usuário
+            Usuario usuario = usuarioRepository.findById(usuarioId)
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            
+            System.out.println("✅ Usuário encontrado: " + usuario.getNomeCompleto());
+
+            // Buscar anamnese
+            Anamnese anamnese = anamneseRepository.findByUsuarioId(usuarioId)
+                    .orElseThrow(() -> new RuntimeException("Anamnese não encontrada para este usuário."));
+            
+            System.out.println("✅ Anamnese encontrada - ID: " + anamnese.getId());
+
+            // Verificar se tem restrição
+            if (anamnese.getTemRestricao()) {
+                System.out.println("⚠️ Usuário tem restrição - retornando aviso");
+                return new AnamneseComTreinoDto(
+                    anamnese.getId(),
+                    usuarioId,
+                    anamnese.getObjetivoPrincipal(),
+                    anamnese.getDiasPorSemana(),
+                    anamnese.getNivel(),
+                    anamnese.getTemRestricao(),
+                    "Seu formulário foi salvo, mas por ter uma restrição, pedimos que procure um profissional da academia para montar seu treino.",
+                    "AVISO"
+                );
+            }
+
+            // Gerar treino com base na anamnese
+            System.out.println("🤖 Gerando treino com base na anamnese...");
+            DadosCadastroAnamnese dadosAnamnese = new DadosCadastroAnamnese(
+                usuarioId,
+                anamnese.getObjetivoPrincipal(),
+                anamnese.getDiasPorSemana(),
+                anamnese.getNivel(),
+                anamnese.getTemRestricao()
+            );
+            
+            String treinoGerado = planoTreinoService.gerarPlanoTreino(dadosAnamnese);
+            System.out.println("✅ Treino gerado com sucesso!");
+
+            return new AnamneseComTreinoDto(
+                anamnese.getId(),
+                usuarioId,
+                anamnese.getObjetivoPrincipal(),
+                anamnese.getDiasPorSemana(),
+                anamnese.getNivel(),
+                anamnese.getTemRestricao(),
+                treinoGerado,
+                "PLANO_TREINO"
+            );
 
         } catch (Exception e) {
             System.out.println("❌ EXCEÇÃO CAPTURADA:");

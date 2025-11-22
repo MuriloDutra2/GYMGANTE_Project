@@ -1,0 +1,55 @@
+/* forms.css - Estilos complementares para formulários */
+/* As variáveis principais estão definidas em style.css */
+
+/* Ajustes específicos para formulários */
+form {
+    position: relative;
+    z-index: 1;
+}
+
+/* Melhorias visuais adicionais */
+input::placeholder {
+    color: rgba(184, 169, 217, 0.5);
+    opacity: 1;
+}
+
+/* Animação suave ao carregar o formulário */
+main {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividade para mobile */
+@media (max-width: 480px) {
+    main {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    input[type="tel"] {
+        padding: 12px 14px;
+        font-size: 0.95em;
+    }
+}
+
+.hidden {
+    display: none;
+}

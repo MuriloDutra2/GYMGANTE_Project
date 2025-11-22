@@ -1,5 +1,6 @@
 {
     "configurations": [
+
         {
             "type": "java",
             "name": "Spring Boot-GymganteApiApplication<gymgante-api>",
@@ -8,7 +9,10 @@
             "mainClass": "br.com.gymgante.gymgante_api.GymganteApiApplication",
             "projectName": "gymgante-api",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "GEMINI_API_KEY": "AIzaSyBO64MMJnyX4pbHtrkhAG-Z5pbchiwL5TE"
+            }
         }
     ]
 }

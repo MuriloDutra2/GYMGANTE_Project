@@ -33,17 +33,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 3. Sucesso!
             console.log('✅ Login realizado:', data);
-            alert(`✅ Bem-vindo(a), ${data.nomeCompleto}!`);
 
-            // 4. Armazenar usuário
+            // 4. Armazenar userId e dados do usuário
+            localStorage.setItem('userId', data.id);
             localStorage.setItem('usuarioLogado', JSON.stringify(data));
 
-            // 5. Redirecionar (ajuste conforme sua estrutura)
-            // window.location.href = 'anamnese.html';
+            // 5. Verificar se tem treino e redirecionar
+            await verificarETreino(data.id);
 
         } catch (error) {
             console.error('❌ Erro ao fazer login:', error);
             alert(`❌ Falha no login:\n\n${error.message}`);
         }
     });
+
+    async function verificarETreino(userId) {
+        try {
+            const response = await fetch(`http://localhost:8080/anamnese/${userId}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                // Usuário tem treino
+                localStorage.setItem('treinoData', JSON.stringify(data));
+                window.location.href = 'treino.html';
+            } else if (response.status === 404) {
+                // Usuário não tem treino
+                window.location.href = 'anamnese.html';
+            } else {
+                throw new Error('Erro desconhecido na verificação');
+            }
+        } catch (error) {
+            console.error('❌ Erro ao verificar treino:', error);
+            alert('Erro ao verificar treino. Tentando redirecionar para formulário.');
+            window.location.href = 'anamnese.html';
+        }
+    }
 });

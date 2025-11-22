@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import br.com.gymgante.gymgante_api.dto.DadosCadastroUsuario;
 import br.com.gymgante.gymgante_api.dto.DadosLoginUsuario;
@@ -22,7 +23,7 @@ public class UsuarioController {
      * Agora retorna UsuarioResponseDto (DTO), não mais a entidade Usuario.
      */
     @PostMapping("/cadastro")
-    public ResponseEntity<UsuarioResponseDto> cadastrar(@RequestBody DadosCadastroUsuario dados) {
+    public ResponseEntity<UsuarioResponseDto> cadastrar(@RequestBody @Valid DadosCadastroUsuario dados) {
         
         UsuarioResponseDto response = usuarioService.cadastrarUsuario(dados);
         
