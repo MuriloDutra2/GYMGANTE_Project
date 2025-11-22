@@ -5,10 +5,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.gymgante.gymgante_api.controller.dto.DadosCadastroUsuario;
-import br.com.gymgante.gymgante_api.controller.dto.DadosLoginUsuario;
-import br.com.gymgante.gymgante_api.controller.dto.UsuarioResponseDto; // ⭐ NOVO IMPORT
 import br.com.gymgante.gymgante_api.domain.Usuario;
+import br.com.gymgante.gymgante_api.dto.DadosCadastroUsuario;
+import br.com.gymgante.gymgante_api.dto.DadosLoginUsuario;
+import br.com.gymgante.gymgante_api.dto.UsuarioResponseDto;
 import br.com.gymgante.gymgante_api.repository.UsuarioRepository;
 
 @Service

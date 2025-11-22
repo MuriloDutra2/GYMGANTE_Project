@@ -1,38 +1,52 @@
 package br.com.gymgante.gymgante_api.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import br.com.gymgante.gymgante_api.controller.dto.AnamneseResponseDto;
-import br.com.gymgante.gymgante_api.controller.dto.DadosCadastroAnamnese;
+import br.com.gymgante.gymgante_api.dto.DadosCadastroAnamnese;
+import br.com.gymgante.gymgante_api.dto.DadosPlanoTreino;
 import br.com.gymgante.gymgante_api.service.AnamneseService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/anamnese") // <-- Novo prefixo de URL
-
+@RequestMapping("/anamnese")
 public class AnamneseController {
 
-    @Autowired // Injeta o "cérebro" da lógica de anamnese
+    @Autowired
     private AnamneseService anamneseService;
 
-    // Define o endpoint para POST /api/anamnese
+    // Endpoint POST - Criar nova anamnese
     @PostMapping
-    public ResponseEntity<AnamneseResponseDto> cadastrarAnamnese(@RequestBody DadosCadastroAnamnese dados) {
-        
-        // 1. Pega o DTO (com as respostas) que veio do front-end
-        
-        // 2. Chama o serviço para fazer todo o trabalho pesado
-        // (salvar, checar restrição, buscar plano)
-        AnamneseResponseDto resposta = anamneseService.salvarAnamneseEBuscarPlano(dados);
-        
-        // 3. Retorna a resposta (seja o AVISO ou o TREINO)
-        // com um status "HTTP 200 OK"
-        return ResponseEntity.ok(resposta);
+    public ResponseEntity<DadosPlanoTreino> cadastrarAnamnese(@RequestBody @Valid DadosCadastroAnamnese dados) {
+        try {
+            DadosPlanoTreino resultado = anamneseService.salvarAnamneseEBuscarPlano(dados);
+            return ResponseEntity.ok(resultado);
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("já possui um treino")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(new DadosPlanoTreino("ERRO", e.getMessage()));
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new DadosPlanoTreino("ERRO", "Ocorreu um erro inesperado no servidor."));
+        }
     }
 
+    // Endpoint PUT - Atualizar anamnese existente
+    @PutMapping("/{usuarioId}")
+    public ResponseEntity<DadosPlanoTreino> atualizarAnamnese(
+            @PathVariable Long usuarioId,
+            @RequestBody @Valid DadosCadastroAnamnese dados) {
+        try {
+            DadosPlanoTreino resultado = anamneseService.atualizarAnamneseEBuscarPlano(usuarioId, dados);
+            return ResponseEntity.ok(resultado);
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("não encontrad")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new DadosPlanoTreino("ERRO", e.getMessage()));
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new DadosPlanoTreino("ERRO", "Ocorreu um erro inesperado no servidor."));
+        }
+    }
 }

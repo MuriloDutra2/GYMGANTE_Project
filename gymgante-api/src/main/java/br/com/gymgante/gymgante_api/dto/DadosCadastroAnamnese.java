@@ -1,4 +1,4 @@
-package br.com.gymgante.gymgante_api.controller.dto;
+package br.com.gymgante.gymgante_api.dto;
 
 // Este record é o "pacote" de dados que o front-end
 // enviará quando o usuário preencher o formulário

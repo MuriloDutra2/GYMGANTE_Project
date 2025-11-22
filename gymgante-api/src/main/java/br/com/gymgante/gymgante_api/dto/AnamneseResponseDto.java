@@ -1,4 +1,4 @@
-package br.com.gymgante.gymgante_api.controller.dto;
+package br.com.gymgante.gymgante_api.dto;
 
 public record AnamneseResponseDto(
     String tipo,    // Ex: "AVISO" ou "TREINO"

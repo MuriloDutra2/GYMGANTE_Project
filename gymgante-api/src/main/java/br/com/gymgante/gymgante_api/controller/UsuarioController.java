@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.gymgante.gymgante_api.controller.dto.DadosCadastroUsuario;
-import br.com.gymgante.gymgante_api.controller.dto.DadosLoginUsuario;
-import br.com.gymgante.gymgante_api.controller.dto.UsuarioResponseDto; // ⭐ NOVO IMPORT
+import br.com.gymgante.gymgante_api.dto.DadosCadastroUsuario;
+import br.com.gymgante.gymgante_api.dto.DadosLoginUsuario;
+import br.com.gymgante.gymgante_api.dto.UsuarioResponseDto;
 import br.com.gymgante.gymgante_api.service.UsuarioService;
 
 @RestController
