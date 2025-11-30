@@ -1,6 +1,8 @@
 // Configurações da API
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:8080',
+   
+    BASE_URL: '', 
+    
     ENDPOINTS: {
         USUARIOS: {
             CADASTRO: '/api/usuarios/cadastro',
