@@ -18,7 +18,7 @@ async function verificarTreinoExistente() {
     loading.style.display = 'flex';
 
     try {
-        const response = await fetch(`http://localhost:8080/anamnese/${userId}`);
+        fetch('${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANAMNESE}/${userId}');
         
         if (response.ok) {
             // Usuário TEM treino - Redirecionar para treino

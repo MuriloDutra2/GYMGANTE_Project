@@ -12,10 +12,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Verificar se usuário já tem anamnese (para determinar se é criação ou atualização)
+// Verificar se usuário já tem anamnese
     let isUpdate = false;
     try {
-        const response = await fetch(`http://localhost:8080/anamnese/${userId}`);
+        
+        const urlCheck = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANAMNESE}/${userId}`;
+        const response = await fetch(urlCheck);
         if (response.ok) {
             isUpdate = true;
             console.log('ℹ️ Usuário já tem anamnese. Modo: ATUALIZAÇÃO');
