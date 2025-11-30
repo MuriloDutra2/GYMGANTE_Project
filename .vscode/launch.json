@@ -11,7 +11,7 @@
             "args": "",
             "envFile": "${workspaceFolder}/.env",
             "env": {
-                "GEMINI_API_KEY": "AIzaSyBO64MMJnyX4pbHtrkhAG-Z5pbchiwL5TE"
+                "GEMINI_API_KEY": "AIzaSyCQJNgA_ycf5vlFfq_naJJykZaaEylmk4Q"
             }
         }
     ]

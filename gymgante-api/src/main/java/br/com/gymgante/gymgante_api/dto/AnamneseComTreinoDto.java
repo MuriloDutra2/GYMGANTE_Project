@@ -11,3 +11,5 @@ public record AnamneseComTreinoDto(
     String tipo     // "PLANO_TREINO" ou "AVISO"
 ) {}
 
+
+

@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gym Gante</title>
  
-  <!-- Fonte moderna -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
  
   <style>
@@ -39,7 +38,7 @@
     }
  
     .logo img {
-      height: 55px; /* Tamanho do logo */
+      height: 110px;
       width: auto;
       display: block;
       filter: drop-shadow(0 0 6px rgba(160, 32, 240, 0.4));
@@ -113,11 +112,6 @@
       -webkit-text-fill-color: transparent;
     }
  
-    .hero-content .btn {
-      margin-top: 25px;
-    }
- 
-    /* ---------- SEÇÕES ---------- */
     section {
       padding: 100px 10%;
       background-color: #0a0a0a;
@@ -140,7 +134,79 @@
       margin: 0 auto;
     }
  
-    /* ---------- ANIMAÇÕES ---------- */
+    /* PLANOS */
+    .planos-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+ 
+    .plano-card {
+      background: #151515;
+      border: 1px solid #6a00ff33;
+      border-radius: 20px;
+      padding: 40px 25px;
+      box-shadow: 0 0 15px #000;
+      transition: 0.3s;
+    }
+ 
+    .plano-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px rgba(160, 32, 240, 0.4);
+    }
+ 
+    .plano-destaque {
+      background: #1b012a;
+      border: 2px solid #6a00ff;
+      transform: scale(1.05);
+      position: relative;
+    }
+ 
+    .plano-destaque span {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #6a00ff;
+      padding: 5px 15px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+ 
+    .plano-card h3 {
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+    }
+ 
+    .plano-card p {
+      margin-bottom: 20px;
+      color: #ccc;
+    }
+ 
+    .plano-card .preco {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+ 
+    .plano-card button {
+      background: #6a00ff;
+      border: none;
+      padding: 12px 20px;
+      color: #fff;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+ 
+    .plano-card button:hover {
+      background: #5200c7;
+    }
+ 
     @keyframes fadeInUp {
       0% {
         opacity: 0;
@@ -151,36 +217,18 @@
         transform: translateY(0);
       }
     }
- 
-    /* ---------- RESPONSIVO ---------- */
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-      }
- 
-      .hero-content h1 {
-        font-size: 2.3rem;
-      }
- 
-      .hero-content p {
-        font-size: 1rem;
-      }
-    }
   </style>
 </head>
 <body>
  
   <header>
     <div class="logo">
-        <img src="teste.png" alt="Logo Gym Gante">        
+        <img src="imagem.png.png" alt="Logo Gym Gante">        
     </div>
     <nav>
       <a href="#sobre">Sobre</a>
       <a href="#planos">Planos</a>
       <a href="#vantagens">Vantagens</a>
-      <a href="#unidades">Unidades</a>
     </nav>
     <a href="login.html" class="btn">Login</a>
   </header>
@@ -197,9 +245,48 @@
  
   <section id="sobre">
     <h2>Sobre a Gym Gante</h2>
-    <p> Na Gym Gante, você treina no padrão das maiores academias de elite. Estrutura de última geração,
-        clima motivador e acompanhamento especializado transformam seu treino em uma experiência exclusiva.
-        Eleve sua performance ao nível que você sempre quis.</p>
+    <p>Na Gym Gante, você treina no padrão das maiores academias de elite. Estrutura de última geração,
+    clima motivador e acompanhamento especializado transformam seu treino em uma experiência exclusiva.</p>
+  </section>
+ 
+  <section id="planos">
+    <h2>Planos</h2>
+    <p>Escolha o plano ideal para você</p>
+ 
+    <div class="planos-container">
+      <div class="plano-card">
+        <h3>Mensal</h3>
+        <p>Pagamento mês a mês.</p>
+        <p class="preco">R$ 120/mês</p>
+        <button onclick="window.location.href='cadastro.html'">Assinar Mensal</button>
+      </div>
+ 
+      <div class="plano-card">
+        <h3>Semestral</h3>
+        <p>Economize pagando 6 meses.</p>
+        <p class="preco">R$ 115/mês</p>
+        <p>Total: R$ 690</p>
+        <button onclick="window.location.href='cadastro.html'">Assinar Semestral</button>
+      </div>
+ 
+      <div class="plano-card plano-destaque">
+        <span>Mais vantajoso</span>
+        <h3>Anual</h3>
+        <p>Nosso melhor custo-benefício.</p>
+        <p class="preco">R$ 110/mês</p>
+        <p>Total: R$ 1320</p>
+        <button onclick="window.location.href='cadastro.html'">Assinar Anual</button>
+      </div>
+    </div>
+    <br>
+ 
+    <h2>Vantagens</h2>
+    <p>
+      Treinar na Gym Gante significa ter acesso ao que há de melhor:  
+      equipamentos de elite, área de musculação completa, ambiente limpo e organizado,  
+      programas exclusivos de alta performance, professores qualificados e suporte total  
+      para você alcançar seus resultados mais rápido e com segurança.
+    </p>
   </section>
  
 </body>
