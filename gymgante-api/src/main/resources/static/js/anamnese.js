@@ -12,12 +12,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-// Verificar se usuário já tem anamnese
+    // Verificar se usuário já tem anamnese (para determinar se é criação ou atualização)
     let isUpdate = false;
     try {
-        
+        // ✅ CORREÇÃO AQUI: Usando API_CONFIG em vez de localhost fixo
         const urlCheck = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANAMNESE}/${userId}`;
         const response = await fetch(urlCheck);
+        
         if (response.ok) {
             isUpdate = true;
             console.log('ℹ️ Usuário já tem anamnese. Modo: ATUALIZAÇÃO');
@@ -91,6 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         try {
+            // ✅ AQUI JÁ ESTAVA CORRETO, MANTIDO
             const url = isUpdate 
                 ? `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANAMNESE}/${userId}` 
                 : `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANAMNESE}`;

@@ -49,7 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function verificarETreino(userId) {
         try {
-            const response = await fetch(`http://localhost:8080/anamnese/${userId}`);
+            // Usa a configuração relativa (vazia) que definimos no config.js
+const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANAMNESE}/${userId}`);
             const data = await response.json();
 
             if (response.ok) {

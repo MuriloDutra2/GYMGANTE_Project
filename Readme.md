@@ -1,8 +1,8 @@
-# 🏋️ GYMGATE - Sistema de Treinos Inteligentes com IA
+# 🏋️ GymGante - Sistema de Treinos Inteligentes com IA
 
 > **TCC - Curso de Análise e Desenvolvimento de Sistemas**
 
-O **GYMGATE** é uma plataforma web full-stack que revoluciona a prescrição de treinos em academias. Utilizando **Inteligência Artificial Generativa (Google Gemini)**, o sistema analisa o perfil físico e restrições do aluno para criar, em segundos, um plano de treino periodizado e personalizado, algo que levaria horas para ser feito manualmente.
+O **GymGante** é uma plataforma web full-stack que revoluciona a prescrição de treinos em academias. Utilizando **Inteligência Artificial Generativa (Google Gemini)**, o sistema analisa o perfil físico e restrições do aluno para criar, em segundos, um plano de treino periodizado e personalizado, algo que levaria horas para ser feito manualmente.
 
 ![Status do Projeto](https://img.shields.io/badge/Status-Concluído-brightgreen)
 ![Java](https://img.shields.io/badge/Java-21-orange)

@@ -16,17 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("📤 Enviando login:", { loginIdentifier: dadosLogin.loginIdentifier, senha: '***' });
 
         try {
-            // 2. Enviar requisição com timeout
-            const response = await fetchWithTimeout(
-                `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USUARIOS.LOGIN}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(dadosLogin)
-                }
-            );
+            // 2. Enviar requisição
+            // ✅ CORREÇÃO 1: Usando API_CONFIG no Login
+            const urlLogin = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USUARIOS.LOGIN}`;
+            
+            const response = await fetch(urlLogin, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dadosLogin)
+            });
 
             const data = await response.json();
 
@@ -36,85 +36,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 3. Sucesso!
             console.log('✅ Login realizado:', data);
-            showToast('Login realizado com sucesso!', 'success', 2000);
 
             // 4. Armazenar userId e dados do usuário
             localStorage.setItem('userId', data.id);
             localStorage.setItem('usuarioLogado', JSON.stringify(data));
 
-            // 5. Mostrar loading e verificar se tem treino
-            mostrarLoading();
+            // 5. Verificar se tem treino e redirecionar
             await verificarETreino(data.id);
 
         } catch (error) {
             console.error('❌ Erro ao fazer login:', error);
-            esconderLoading();
-            showToast(error.message || 'Falha no login', 'error');
+            alert(`❌ Falha no login:\n\n${error.message}`);
         }
     });
 
-    function mostrarLoading() {
-        const loadingOverlay = document.getElementById('loading-overlay');
-        if (loadingOverlay) {
-            loadingOverlay.classList.remove('hidden');
-        }
-    }
-
-    function esconderLoading() {
-        const loadingOverlay = document.getElementById('loading-overlay');
-        if (loadingOverlay) {
-            loadingOverlay.classList.add('hidden');
-        }
-    }
-
     async function verificarETreino(userId) {
         try {
-            console.log('🔍 Verificando se usuário tem treino...');
-            const response = await fetchWithTimeout(
-                `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANAMNESE}/${userId}`
-            );
-            
-            if (response.status === 404) {
-                // Usuário não tem anamnese/treino
-                console.log('ℹ️ Usuário não tem treino. Redirecionando para anamnese...');
-                esconderLoading();
-                window.location.href = 'anamnese.html';
-                return;
-            }
-
-            if (!response.ok) {
-                throw new Error(`Erro ao buscar treino: ${response.status}`);
-            }
-
+            // ✅ CORREÇÃO 2: Usando API_CONFIG na verificação de treino
+            const urlCheck = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANAMNESE}/${userId}`;
+            const response = await fetch(urlCheck);
             const data = await response.json();
-            console.log('✅ Treino encontrado:', data);
 
-            // Salvar dados da anamnese e treino no localStorage
-            localStorage.setItem('anamneseData', JSON.stringify({
-                anamneseId: data.anamneseId,
-                objetivoPrincipal: data.objetivoPrincipal,
-                diasPorSemana: data.diasPorSemana,
-                nivel: data.nivel,
-                temRestricao: data.temRestricao
-            }));
-            
-            localStorage.setItem('treinoData', JSON.stringify({
-                tipo: data.tipo,
-                treino: data.treino
-            }));
-
-            // Redirecionar para a página de treino
-            esconderLoading();
-            window.location.href = 'treino.html';
-
+            if (response.ok) {
+                // Usuário tem treino
+                localStorage.setItem('treinoData', JSON.stringify(data));
+                window.location.href = 'treino.html';
+            } else if (response.status === 404) {
+                // Usuário não tem treino
+                window.location.href = 'anamnese.html';
+            } else {
+                throw new Error('Erro desconhecido na verificação');
+            }
         } catch (error) {
             console.error('❌ Erro ao verificar treino:', error);
-            esconderLoading();
-            // Em caso de erro, redireciona para anamnese para criar o treino
-            showToast('Não foi possível carregar seu treino. Redirecionando...', 'error', 2000);
-            setTimeout(() => {
-                window.location.href = 'anamnese.html';
-            }, 2000);
+            alert('Erro ao verificar treino. Tentando redirecionar para formulário.');
+            window.location.href = 'anamnese.html';
         }
     }
 });
