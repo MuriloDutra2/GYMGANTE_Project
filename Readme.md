@@ -1,6 +1,6 @@
 # 🏋️ GymGante - Sistema de Treinos Inteligentes com IA
 
-> **TCC - Curso de Análise e Desenvolvimento de Sistemas**
+
 
 O **GymGante** é uma plataforma web full-stack que revoluciona a prescrição de treinos em academias. Utilizando **Inteligência Artificial Generativa (Google Gemini)**, o sistema analisa o perfil físico e restrições do aluno para criar, em segundos, um plano de treino periodizado e personalizado, algo que levaria horas para ser feito manualmente.
 
@@ -14,7 +14,7 @@ O **GymGante** é uma plataforma web full-stack que revoluciona a prescrição d
 
 ## 📸 Screenshots
 
-*(Coloque aqui prints das telas: Login, Anamnese e a Tela de Treino Gerado)*
+
 <div style="display: flex; gap: 10px;">
   <img src="login.png" width="300" />
   <img src="treinos.png" width="300" />
