@@ -25,7 +25,7 @@ public class AnamneseController {
             DadosPlanoTreino resultado = anamneseService.salvarAnamneseEBuscarPlano(dados);
             return ResponseEntity.ok(resultado);
         } catch (PlanoIndisponivelException e) {
-            return erroIa();
+            return erroIa(e);
         } catch (RuntimeException e) {
             if (e.getMessage().contains("já possui um treino")) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -49,7 +49,7 @@ public class AnamneseController {
             DadosPlanoTreino resultado = anamneseService.atualizarAnamneseEBuscarPlano(usuarioId, dados);
             return ResponseEntity.ok(resultado);
         } catch (PlanoIndisponivelException e) {
-            return erroIa();
+            return erroIa(e);
         } catch (RuntimeException e) {
             if (e.getMessage().contains("não encontrad")) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -76,8 +76,8 @@ public class AnamneseController {
         }
     }
 
-    private ResponseEntity<DadosPlanoTreino> erroIa() {
+    private ResponseEntity<DadosPlanoTreino> erroIa(PlanoIndisponivelException e) {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body(new DadosPlanoTreino("ERRO", "Não foi possível gerar o treino agora (serviço de IA indisponível). Tente novamente em instantes."));
+                .body(new DadosPlanoTreino("ERRO", "Não foi possível gerar o treino agora (serviço de IA indisponível). Tente novamente em instantes. [" + e.getDetalhe() + "]"));
     }
 }

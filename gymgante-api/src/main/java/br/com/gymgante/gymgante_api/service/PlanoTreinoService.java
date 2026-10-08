@@ -27,21 +27,35 @@ public class PlanoTreinoService {
     @Value("${gemini.mock:false}")
     private boolean mock;
 
+    @jakarta.annotation.PostConstruct
+    void diagnosticarChave() {
+        if (mock) {
+            System.out.println("🤖 Gemini: modo mock ligado (perfil local)");
+            return;
+        }
+        String k = apiKey == null ? "" : apiKey;
+        System.out.println("🔑 Gemini: chave com " + k.trim().length() + " caracteres, começa com 'AIza': "
+                + k.trim().startsWith("AIza") + ", espaços/quebras nas pontas: " + !k.equals(k.trim()));
+    }
+
     private final RestTemplate restTemplate = criarRestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private static RestTemplate criarRestTemplate() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(10_000);
-        factory.setReadTimeout(55_000);
+        factory.setReadTimeout(20_000);
         return new RestTemplate(factory);
     }
+
+    // Se o primeiro modelo estiver sobrecarregado (503/429), tenta os seguintes
+    private static final List<String> MODELOS = List.of("gemini-flash-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite");
+    private static final long LIMITE_TOTAL_MS = 35_000;
 
     public String gerarPlanoTreino(DadosCadastroAnamnese dados) {
         if (mock) {
             return planoDeExemplo(dados);
         }
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent";
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("contents", List.of(Map.of("parts", List.of(Map.of("text", construirPrompt(dados))))));
@@ -52,28 +66,65 @@ public class PlanoTreinoService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         // A chave vai no header (e não na URL) para nunca aparecer em logs de erro
-        headers.set("x-goog-api-key", apiKey);
+        headers.set("x-goog-api-key", apiKey.trim());
 
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                    url, HttpMethod.POST, new HttpEntity<>(requestBody, headers), String.class);
+        long limite = System.currentTimeMillis() + LIMITE_TOTAL_MS;
+        String ultimoDetalhe = "sem resposta";
+        Exception ultimaCausa = null;
 
-            JsonNode texto = objectMapper.readTree(response.getBody())
-                    .path("candidates").path(0).path("content").path("parts").path(0).path("text");
-            if (texto.isMissingNode() || texto.asText().isBlank()) {
-                throw new IllegalStateException("Resposta do Gemini sem conteúdo: " + response.getBody());
+        for (String modelo : MODELOS) {
+            for (int tentativa = 1; tentativa <= 2; tentativa++) {
+                if (System.currentTimeMillis() > limite) {
+                    break;
+                }
+                try {
+                    String plano = chamarGemini(modelo, requestBody, headers);
+                    if (!modelo.equals(MODELOS.get(0)) || tentativa > 1) {
+                        System.out.println("✅ Plano gerado com " + modelo + " (tentativa " + tentativa + ")");
+                    }
+                    return plano;
+                } catch (HttpStatusCodeException e) {
+                    int status = e.getStatusCode().value();
+                    System.err.println("❌ Gemini [" + modelo + "] respondeu " + e.getStatusCode() + ": " + e.getResponseBodyAsString());
+                    ultimoDetalhe = "Gemini HTTP " + status;
+                    ultimaCausa = e;
+                    boolean transitorio = status == 429 || status >= 500;
+                    if (!transitorio) {
+                        break; // 400/403/404: repetir não adianta, passa para o próximo modelo
+                    }
+                    pausar(1500L * tentativa);
+                } catch (Exception e) {
+                    System.err.println("❌ Falha com " + modelo + ": " + e.getClass().getSimpleName() + " - " + e.getMessage());
+                    ultimoDetalhe = e.getClass().getSimpleName();
+                    ultimaCausa = e;
+                    pausar(1000);
+                }
             }
+        }
+        throw new PlanoIndisponivelException("Falha ao gerar plano de treino", ultimoDetalhe, ultimaCausa);
+    }
 
-            String json = limparMarkdown(texto.asText());
-            objectMapper.readTree(json); // valida; lança exceção se não for JSON
-            return json;
+    private String chamarGemini(String modelo, Map<String, Object> requestBody, HttpHeaders headers) throws Exception {
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/" + modelo + ":generateContent";
+        ResponseEntity<String> response = restTemplate.exchange(
+                url, HttpMethod.POST, new HttpEntity<>(requestBody, headers), String.class);
 
-        } catch (HttpStatusCodeException e) {
-            System.err.println("❌ Gemini respondeu " + e.getStatusCode() + ": " + e.getResponseBodyAsString());
-            throw new PlanoIndisponivelException("Gemini retornou " + e.getStatusCode(), e);
-        } catch (Exception e) {
-            System.err.println("❌ Falha ao gerar plano: " + e.getClass().getSimpleName() + " - " + e.getMessage());
-            throw new PlanoIndisponivelException("Falha ao gerar plano de treino", e);
+        JsonNode texto = objectMapper.readTree(response.getBody())
+                .path("candidates").path(0).path("content").path("parts").path(0).path("text");
+        if (texto.isMissingNode() || texto.asText().isBlank()) {
+            throw new IllegalStateException("Resposta do Gemini sem conteúdo");
+        }
+
+        String json = limparMarkdown(texto.asText());
+        objectMapper.readTree(json); // valida; lança exceção se não for JSON
+        return json;
+    }
+
+    private void pausar(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
         }
     }
 
