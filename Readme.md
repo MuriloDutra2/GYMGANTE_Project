@@ -10,6 +10,11 @@ O **GymGante** é uma plataforma web full-stack que revoluciona a prescrição d
 ![AI](https://img.shields.io/badge/AI-Google_Gemini-blue)
 ![PostgreSQL](https://img.shields.io/badge/DB-PostgreSQL-336791)
 
+
+🔗 **Acesse o projeto online:** https://gymgante-api.onrender.com/
+
+> ⏳ Hospedado no plano gratuito do Render: o primeiro acesso após um período sem uso pode levar cerca de 50 segundos para carregar.
+
 ---
 
 ## 📸 Screenshots

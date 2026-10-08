@@ -55,22 +55,30 @@ document.addEventListener('DOMContentLoaded', () => {
             // ✅ CORREÇÃO 2: Usando API_CONFIG na verificação de treino
             const urlCheck = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANAMNESE}/${userId}`;
             const response = await fetch(urlCheck);
-            const data = await response.json();
 
-            if (response.ok) {
-                // Usuário tem treino
-                localStorage.setItem('treinoData', JSON.stringify(data));
-                window.location.href = 'treino.html';
-            } else if (response.status === 404) {
-                // Usuário não tem treino
+            if (response.status === 404) {
+                // Usuário ainda não tem treino
                 window.location.href = 'anamnese.html';
-            } else {
+                return;
+            }
+
+            if (!response.ok) {
                 throw new Error('Erro desconhecido na verificação');
             }
+
+            // Usuário tem treino
+            const data = await response.json();
+            localStorage.setItem('anamneseData', JSON.stringify({
+                objetivoPrincipal: data.objetivoPrincipal,
+                diasPorSemana: data.diasPorSemana,
+                nivel: data.nivel,
+                temRestricao: data.temRestricao
+            }));
+            localStorage.setItem('treinoData', JSON.stringify({ tipo: data.tipo, treino: data.treino }));
+            window.location.href = 'treino.html';
         } catch (error) {
             console.error('❌ Erro ao verificar treino:', error);
-            alert('Erro ao verificar treino. Tentando redirecionar para formulário.');
-            window.location.href = 'anamnese.html';
+                        window.location.href = 'anamnese.html';
         }
     }
 });

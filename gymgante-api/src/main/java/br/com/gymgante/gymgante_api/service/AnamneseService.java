@@ -11,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 public class AnamneseService {
+
+    private static final String AVISO_RESTRICAO =
+            "Seu formulário foi salvo, mas por ter uma restrição, pedimos que procure um profissional da academia para montar seu treino.";
 
     @Autowired
     private AnamneseRepository anamneseRepository;
@@ -23,191 +24,82 @@ public class AnamneseService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private PlanoTreinoService planoTreinoService;  // ⬅️ INJETAR O PlanoTreinoService
+    private PlanoTreinoService planoTreinoService;
 
     @Transactional
     public DadosPlanoTreino salvarAnamneseEBuscarPlano(DadosCadastroAnamnese dados) {
-        System.out.println("📋 INÍCIO - salvarAnamneseEBuscarPlano");
-        System.out.println("📋 Dados recebidos: " + dados);
+        Usuario usuario = usuarioRepository.findById(dados.usuarioId())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        try {
-            // Buscar usuário
-            System.out.println("🔍 Buscando usuário ID: " + dados.usuarioId());
-            Usuario usuario = usuarioRepository.findById(dados.usuarioId())
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-            
-            System.out.println("✅ Usuário encontrado: " + usuario.getNomeCompleto());
-            
-            // Verificar se já tem anamnese
-            System.out.println("🔍 Verificando se usuário já tem anamnese...");
-            Optional<Anamnese> anamneseExistente = anamneseRepository.findByUsuarioId(dados.usuarioId());
-            
-            if (anamneseExistente.isPresent()) {
-                System.out.println("⚠️ ERRO: Usuário já tem anamnese!");
-                throw new RuntimeException("Este usuário já possui um treino cadastrado. Use PUT /anamnese/{usuarioId} para atualizar.");
-            }
-
-            System.out.println("✅ Usuário não tem anamnese ainda");
-            
-            // Criar e salvar anamnese
-            System.out.println("📝 Criando nova anamnese...");
-           Anamnese anamnese = new Anamnese();
-anamnese.setUsuario(usuario);
-anamnese.setObjetivoPrincipal(dados.objetivoPrincipal());
-anamnese.setDiasPorSemana(dados.diasPorSemana());
-anamnese.setNivel(dados.nivel());
-anamnese.setTemRestricao(dados.temRestricao());
-            
-            System.out.println("💾 Salvando anamnese no banco...");
-            anamnese = anamneseRepository.save(anamnese);
-            System.out.println("✅ Anamnese salva com sucesso!");
-
-            // Verificar restrição
-            System.out.println("🔍 Verificando se tem restrição...");
-            if (dados.temRestricao()) {
-                System.out.println("⚠️ Usuário tem restrição - retornando aviso");
-                return new DadosPlanoTreino(
-                    "AVISO",
-                    "Seu formulário foi salvo, mas por ter uma restrição, pedimos que procure um profissional da academia para montar seu treino."
-                );
-            }
-
-            // USAR O GEMINI para gerar o plano
-            System.out.println("🤖 Chamando Gemini para gerar plano de treino...");
-            String planoGerado = planoTreinoService.gerarPlanoTreino(dados);
-            System.out.println("✅ Plano gerado com sucesso pelo Gemini!");
-
-            return new DadosPlanoTreino("PLANO_TREINO", planoGerado);
-
-        } catch (Exception e) {
-            System.out.println("❌ EXCEÇÃO CAPTURADA:");
-            System.out.println("   Mensagem: " + e.getMessage());
-            System.out.println("   Tipo: " + e.getClass().getName());
-            e.printStackTrace();
-            throw e;
+        if (anamneseRepository.findByUsuarioId(dados.usuarioId()).isPresent()) {
+            throw new RuntimeException("Este usuário já possui um treino cadastrado. Use PUT /anamnese/{usuarioId} para atualizar.");
         }
+
+        Anamnese anamnese = new Anamnese(dados, usuario);
+        return aplicarPlano(anamnese, dados);
     }
 
     @Transactional
     public DadosPlanoTreino atualizarAnamneseEBuscarPlano(Long usuarioId, DadosCadastroAnamnese dados) {
-        System.out.println("🔄 INÍCIO - atualizarAnamneseEBuscarPlano");
-        System.out.println("🔄 Usuário ID: " + usuarioId);
-        System.out.println("🔄 Novos dados: " + dados);
+        usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        try {
-            // Buscar usuário
-            Usuario usuario = usuarioRepository.findById(usuarioId)
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-            
-            System.out.println("✅ Usuário encontrado: " + usuario.getNomeCompleto());
+        Anamnese anamnese = anamneseRepository.findByUsuarioId(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Anamnese não encontrada para este usuário. Use POST /anamnese para criar."));
 
-            // Buscar anamnese existente
-            Anamnese anamnese = anamneseRepository.findByUsuarioId(usuarioId)
-                    .orElseThrow(() -> new RuntimeException("Anamnese não encontrada para este usuário. Use POST /anamnese para criar."));
-            
-            System.out.println("📝 Anamnese encontrada - ID: " + anamnese.getId());
-
-            // Atualizar dados
-            anamnese.setObjetivoPrincipal(dados.objetivoPrincipal());
-            anamnese.setDiasPorSemana(dados.diasPorSemana());
-            anamnese.setNivel(dados.nivel());
-            anamnese.setTemRestricao(dados.temRestricao());
-            
-            anamnese = anamneseRepository.save(anamnese);
-            System.out.println("✅ Anamnese atualizada!");
-
-            // Verificar restrição
-            if (dados.temRestricao()) {
-                System.out.println("⚠️ Usuário tem restrição - retornando aviso");
-                return new DadosPlanoTreino(
-                    "AVISO",
-                    "Seu formulário foi atualizado, mas por ter uma restrição, pedimos que procure um profissional da academia para montar seu treino."
-                );
-            }
-
-            // Gerar novo plano com Gemini
-            System.out.println("🤖 Chamando Gemini para gerar novo plano...");
-            String planoGerado = planoTreinoService.gerarPlanoTreino(dados);
-            System.out.println("✅ Novo plano gerado com sucesso!");
-
-            return new DadosPlanoTreino("PLANO_TREINO", planoGerado);
-
-        } catch (Exception e) {
-            System.out.println("❌ EXCEÇÃO CAPTURADA:");
-            System.out.println("   Mensagem: " + e.getMessage());
-            System.out.println("   Tipo: " + e.getClass().getName());
-            e.printStackTrace();
-            throw e;
-        }
+        anamnese.setObjetivoPrincipal(dados.objetivoPrincipal());
+        anamnese.setDiasPorSemana(dados.diasPorSemana());
+        anamnese.setNivel(dados.nivel());
+        anamnese.setTemRestricao(dados.temRestricao());
+        return aplicarPlano(anamnese, dados);
     }
 
     /**
-     * Busca a anamnese do usuário e gera o treino correspondente.
-     * Usado quando o usuário faz login e precisa ver seu treino.
+     * Busca a anamnese do usuário e o treino salvo. Só chama a IA se ainda não houver treino guardado.
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public AnamneseComTreinoDto buscarAnamneseETreino(Long usuarioId) {
-        System.out.println("🔍 INÍCIO - buscarAnamneseETreino");
-        System.out.println("🔍 Usuário ID: " + usuarioId);
+        usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        try {
-            // Buscar usuário
-            Usuario usuario = usuarioRepository.findById(usuarioId)
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-            
-            System.out.println("✅ Usuário encontrado: " + usuario.getNomeCompleto());
+        Anamnese anamnese = anamneseRepository.findByUsuarioId(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Anamnese não encontrada para este usuário."));
 
-            // Buscar anamnese
-            Anamnese anamnese = anamneseRepository.findByUsuarioId(usuarioId)
-                    .orElseThrow(() -> new RuntimeException("Anamnese não encontrada para este usuário."));
-            
-            System.out.println("✅ Anamnese encontrada - ID: " + anamnese.getId());
-
-            // Verificar se tem restrição
-            if (anamnese.getTemRestricao()) {
-                System.out.println("⚠️ Usuário tem restrição - retornando aviso");
-                return new AnamneseComTreinoDto(
-                    anamnese.getId(),
-                    usuarioId,
-                    anamnese.getObjetivoPrincipal(),
-                    anamnese.getDiasPorSemana(),
-                    anamnese.getNivel(),
-                    anamnese.getTemRestricao(),
-                    "Seu formulário foi salvo, mas por ter uma restrição, pedimos que procure um profissional da academia para montar seu treino.",
-                    "AVISO"
-                );
+        String tipo;
+        String treino;
+        if (Boolean.TRUE.equals(anamnese.getTemRestricao())) {
+            tipo = "AVISO";
+            treino = AVISO_RESTRICAO;
+        } else {
+            if (anamnese.getTreinoJson() == null || anamnese.getTreinoJson().isBlank()) {
+                DadosCadastroAnamnese dados = new DadosCadastroAnamnese(
+                        usuarioId, anamnese.getObjetivoPrincipal(), anamnese.getDiasPorSemana(),
+                        anamnese.getNivel(), false);
+                anamnese.setTreinoJson(planoTreinoService.gerarPlanoTreino(dados));
+                anamneseRepository.save(anamnese);
             }
-
-            // Gerar treino com base na anamnese
-            System.out.println("🤖 Gerando treino com base na anamnese...");
-            DadosCadastroAnamnese dadosAnamnese = new DadosCadastroAnamnese(
-                usuarioId,
-                anamnese.getObjetivoPrincipal(),
-                anamnese.getDiasPorSemana(),
-                anamnese.getNivel(),
-                anamnese.getTemRestricao()
-            );
-            
-            String treinoGerado = planoTreinoService.gerarPlanoTreino(dadosAnamnese);
-            System.out.println("✅ Treino gerado com sucesso!");
-
-            return new AnamneseComTreinoDto(
-                anamnese.getId(),
-                usuarioId,
-                anamnese.getObjetivoPrincipal(),
-                anamnese.getDiasPorSemana(),
-                anamnese.getNivel(),
-                anamnese.getTemRestricao(),
-                treinoGerado,
-                "PLANO_TREINO"
-            );
-
-        } catch (Exception e) {
-            System.out.println("❌ EXCEÇÃO CAPTURADA:");
-            System.out.println("   Mensagem: " + e.getMessage());
-            System.out.println("   Tipo: " + e.getClass().getName());
-            e.printStackTrace();
-            throw e;
+            tipo = "PLANO_TREINO";
+            treino = anamnese.getTreinoJson();
         }
+
+        return new AnamneseComTreinoDto(
+                anamnese.getId(), usuarioId, anamnese.getObjetivoPrincipal(),
+                anamnese.getDiasPorSemana(), anamnese.getNivel(), anamnese.getTemRestricao(),
+                treino, tipo);
+    }
+
+    /** Salva a anamnese e, se não houver restrição, gera e guarda o treino. */
+    private DadosPlanoTreino aplicarPlano(Anamnese anamnese, DadosCadastroAnamnese dados) {
+        if (dados.temRestricao()) {
+            anamnese.setTreinoJson(null);
+            anamneseRepository.save(anamnese);
+            return new DadosPlanoTreino("AVISO", AVISO_RESTRICAO);
+        }
+
+        // Se a IA falhar, a exceção desfaz a transação e nada é salvo pela metade
+        String plano = planoTreinoService.gerarPlanoTreino(dados);
+        anamnese.setTreinoJson(plano);
+        anamneseRepository.save(anamnese);
+        return new DadosPlanoTreino("PLANO_TREINO", plano);
     }
 }

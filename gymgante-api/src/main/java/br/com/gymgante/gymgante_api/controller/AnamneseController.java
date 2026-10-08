@@ -4,6 +4,7 @@ import br.com.gymgante.gymgante_api.dto.AnamneseComTreinoDto;
 import br.com.gymgante.gymgante_api.dto.DadosCadastroAnamnese;
 import br.com.gymgante.gymgante_api.dto.DadosPlanoTreino;
 import br.com.gymgante.gymgante_api.service.AnamneseService;
+import br.com.gymgante.gymgante_api.service.PlanoIndisponivelException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,8 @@ public class AnamneseController {
         try {
             DadosPlanoTreino resultado = anamneseService.salvarAnamneseEBuscarPlano(dados);
             return ResponseEntity.ok(resultado);
+        } catch (PlanoIndisponivelException e) {
+            return erroIa();
         } catch (RuntimeException e) {
             if (e.getMessage().contains("já possui um treino")) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -41,6 +44,8 @@ public class AnamneseController {
         try {
             DadosPlanoTreino resultado = anamneseService.atualizarAnamneseEBuscarPlano(usuarioId, dados);
             return ResponseEntity.ok(resultado);
+        } catch (PlanoIndisponivelException e) {
+            return erroIa();
         } catch (RuntimeException e) {
             if (e.getMessage().contains("não encontrad")) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -57,11 +62,18 @@ public class AnamneseController {
         try {
             AnamneseComTreinoDto resultado = anamneseService.buscarAnamneseETreino(usuarioId);
             return ResponseEntity.ok(resultado);
+        } catch (PlanoIndisponivelException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
         } catch (RuntimeException e) {
             if (e.getMessage().contains("não encontrad")) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    private ResponseEntity<DadosPlanoTreino> erroIa() {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new DadosPlanoTreino("ERRO", "Não foi possível gerar o treino agora (serviço de IA indisponível). Tente novamente em instantes."));
     }
 }

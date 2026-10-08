@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: JSON.stringify(payload)
             }, 60000); // 60 segundos de timeout para geração de treino
 
-            const data = await response.json();
+            const data = await response.json().catch(() => ({}));
 
             if (response.ok) {
                 if (data.tipo === 'PLANO_TREINO') {
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     throw new Error('Erro ao atualizar treino.');
                 }
             } else {
-                throw new Error(data.mensagem || 'Erro na geração do treino.');
+                throw new Error(data.conteudo || data.mensagem || 'Erro na geração do treino.');
             }
         } catch (error) {
             console.error('Erro:', error);

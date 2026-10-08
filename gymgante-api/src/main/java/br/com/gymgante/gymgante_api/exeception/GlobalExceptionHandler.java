@@ -31,7 +31,7 @@ public ResponseEntity<ErrorResponseDto> handleRuntimeException(RuntimeException 
     }
     
     // --- 2. NOVO: Tratador de Erros da Anamnese ---
-    if ("Usuário não encontrado.".equals(mensagem) ||
+    if ("Usuário não encontrado".equals(mensagem) ||
         "Este usuário já possui uma anamnese cadastrada.".equals(mensagem) ||
         "Nenhum plano de treino encontrado para esta combinação específica.".equals(mensagem)) {
         
@@ -50,12 +50,12 @@ public ResponseEntity<ErrorResponseDto> handleRuntimeException(RuntimeException 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponseDto> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         
+        String detalhe = String.valueOf(ex.getMostSpecificCause().getMessage()).toLowerCase();
         String mensagemErro;
-        
-        // Verificamos qual restrição foi violada
-        if (ex.getMessage().contains("UKspmnyb4dsul95fjmr5kmdmvub")) { // Restrição do E-mail
+
+        if (detalhe.contains("email")) {
             mensagemErro = "O e-mail informado já está cadastrado.";
-        } else if (ex.getMessage().contains("UK594wib8ansybtilla48x7vdld")) { // Restrição do CPF
+        } else if (detalhe.contains("cpf")) {
             mensagemErro = "O CPF informado já está cadastrado.";
         } else {
             mensagemErro = "Violação de dados. Um campo único já existe.";

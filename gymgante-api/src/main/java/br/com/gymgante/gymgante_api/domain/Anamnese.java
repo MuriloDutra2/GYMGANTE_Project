@@ -27,6 +27,10 @@ public class Anamnese {
     @Column(name = "tem_restricao", nullable = false)
     private Boolean temRestricao;
 
+    // Treino gerado pela IA (guardado para não regenerar a cada acesso)
+    @Column(name = "treino_json", columnDefinition = "TEXT")
+    private String treinoJson;
+
     // Construtor vazio (obrigatório para JPA)
     public Anamnese() {
     }
@@ -87,5 +91,13 @@ public class Anamnese {
 
     public void setTemRestricao(Boolean temRestricao) {
         this.temRestricao = temRestricao;
+    }
+
+    public String getTreinoJson() {
+        return treinoJson;
+    }
+
+    public void setTreinoJson(String treinoJson) {
+        this.treinoJson = treinoJson;
     }
 }

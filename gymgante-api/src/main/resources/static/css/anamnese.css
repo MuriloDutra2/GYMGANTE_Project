@@ -202,3 +202,20 @@ button:disabled {
         font-size: 1rem;
     }
 }
+
+
+.topo-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.topo-nav a {
+    color: #a78bfa;
+    text-decoration: none;
+    font-size: 0.95em;
+}
+
+.topo-nav a:hover {
+    text-decoration: underline;
+}

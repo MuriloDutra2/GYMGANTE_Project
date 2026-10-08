@@ -9,6 +9,8 @@ import br.com.gymgante.gymgante_api.dto.DadosPlanoTreino;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -21,107 +23,67 @@ public class PlanoTreinoService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = criarRestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private static RestTemplate criarRestTemplate() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(10_000);
+        factory.setReadTimeout(55_000);
+        return new RestTemplate(factory);
+    }
+
     public String gerarPlanoTreino(DadosCadastroAnamnese dados) {
-        System.out.println("🤖 === INÍCIO GERAÇÃO DE PLANO ===");
-        System.out.println("📊 Dados recebidos:");
-        System.out.println("   - Objetivo: " + dados.objetivoPrincipal());
-        System.out.println("   - Dias: " + dados.diasPorSemana());
-        System.out.println("   - Nível: " + dados.nivel());
-        System.out.println("   - Tem Restrição: " + dados.temRestricao());
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent";
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("contents", List.of(Map.of("parts", List.of(Map.of("text", construirPrompt(dados))))));
+        requestBody.put("generationConfig", Map.of(
+                "responseMimeType", "application/json",
+                "maxOutputTokens", 8192));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        // A chave vai no header (e não na URL) para nunca aparecer em logs de erro
+        headers.set("x-goog-api-key", apiKey);
 
         try {
-            System.out.println("📝 Construindo prompt...");
-            String prompt = construirPrompt(dados);
-            System.out.println("✅ Prompt construído");
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url, HttpMethod.POST, new HttpEntity<>(requestBody, headers), String.class);
 
-            System.out.println("🌐 Preparando requisição para API Gemini...");
-           // Na linha onde constrói a URL, mude para:
-String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" + apiKey;
-
-            Map<String, Object> requestBody = new HashMap<>();
-            Map<String, Object> content = new HashMap<>();
-            Map<String, String> part = new HashMap<>();
-            
-            part.put("text", prompt);
-            content.put("parts", List.of(part));
-            requestBody.put("contents", List.of(content));
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            
-            HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
-
-            System.out.println("📤 Enviando requisição...");
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
-            
-            System.out.println("📥 Resposta recebida - Status: " + response.getStatusCode());
-
-            System.out.println("🔄 Processando resposta JSON...");
-            JsonNode root = objectMapper.readTree(response.getBody());
-            String respostaGemini = root.path("candidates")
-                    .get(0)
-                    .path("content")
-                    .path("parts")
-                    .get(0)
-                    .path("text")
-                    .asText();
-
-            System.out.println("✅ Resposta do Gemini extraída!");
-            System.out.println("📋 Tamanho da resposta: " + respostaGemini.length() + " caracteres");
-            
-            // Limpar a resposta (remover markdown code blocks se houver)
-            String jsonLimpo = respostaGemini.trim();
-            if (jsonLimpo.startsWith("```json")) {
-                jsonLimpo = jsonLimpo.substring(7);
+            JsonNode texto = objectMapper.readTree(response.getBody())
+                    .path("candidates").path(0).path("content").path("parts").path(0).path("text");
+            if (texto.isMissingNode() || texto.asText().isBlank()) {
+                throw new IllegalStateException("Resposta do Gemini sem conteúdo: " + response.getBody());
             }
-            if (jsonLimpo.startsWith("```")) {
-                jsonLimpo = jsonLimpo.substring(3);
-            }
-            if (jsonLimpo.endsWith("```")) {
-                jsonLimpo = jsonLimpo.substring(0, jsonLimpo.length() - 3);
-            }
-            jsonLimpo = jsonLimpo.trim();
-            
-            // Validar se é JSON válido
-            try {
-                objectMapper.readTree(jsonLimpo);
-                System.out.println("✅ JSON válido!");
-            } catch (Exception e) {
-                System.out.println("⚠️ Resposta não é JSON válido, retornando como texto");
-                // Se não for JSON válido, retorna como estava antes (compatibilidade)
-                return respostaGemini;
-            }
-            
-            System.out.println("🤖 === FIM GERAÇÃO DE PLANO ===");
-            
-            return jsonLimpo;
 
+            String json = limparMarkdown(texto.asText());
+            objectMapper.readTree(json); // valida; lança exceção se não for JSON
+            return json;
+
+        } catch (HttpStatusCodeException e) {
+            System.err.println("❌ Gemini respondeu " + e.getStatusCode() + ": " + e.getResponseBodyAsString());
+            throw new PlanoIndisponivelException("Gemini retornou " + e.getStatusCode(), e);
         } catch (Exception e) {
-            System.out.println("❌ ERRO ao gerar plano:");
-            System.out.println("   Tipo: " + e.getClass().getName());
-            System.out.println("   Mensagem: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Erro ao gerar plano de treino: " + e.getMessage(), e);
+            System.err.println("❌ Falha ao gerar plano: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+            throw new PlanoIndisponivelException("Falha ao gerar plano de treino", e);
         }
     }
 
+    private String limparMarkdown(String texto) {
+        String s = texto.trim();
+        if (s.startsWith("```json")) s = s.substring(7);
+        else if (s.startsWith("```")) s = s.substring(3);
+        if (s.endsWith("```")) s = s.substring(0, s.length() - 3);
+        return s.trim();
+    }
+
     private String construirPrompt(DadosCadastroAnamnese dados) {
-        System.out.println("🔍 Construindo prompt para:");
-        System.out.println("   - Objetivo: '" + dados.objetivoPrincipal() + "'");
-        System.out.println("   - Frequência: '" + dados.diasPorSemana() + "'");
-        System.out.println("   - Nível: '" + dados.nivel() + "'");
 
         String objetivo = normalizar(dados.objetivoPrincipal());
         String frequencia = normalizar(dados.diasPorSemana());
         String nivel = normalizar(dados.nivel());
 
-        System.out.println("🔄 Valores normalizados:");
-        System.out.println("   - Objetivo: '" + objetivo + "'");
-        System.out.println("   - Frequência: '" + frequencia + "'");
-        System.out.println("   - Nível: '" + nivel + "'");
 
         String templateBase = """
             Você é um personal trainer experiente. Crie um plano de treino detalhado com as seguintes características:
@@ -264,7 +226,6 @@ String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-fla
             dados.nivel()
         ) + instrucaoObjetivo + instrucaoFrequencia + instrucaoNivel;
 
-        System.out.println("✅ Prompt construído com sucesso!");
         return promptCompleto;
     }
 

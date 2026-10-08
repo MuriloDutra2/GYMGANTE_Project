@@ -32,8 +32,8 @@ public class UsuarioService {
         // 2. Criar a entidade
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNomeCompleto(dados.nomeCompleto());
-        novoUsuario.setEmail(dados.email());
-        novoUsuario.setCpf(dados.cpf());
+        novoUsuario.setEmail(dados.email().trim().toLowerCase());
+        novoUsuario.setCpf(dados.cpf().replaceAll("\\D", ""));
         novoUsuario.setDataNascimento(dados.dataNascimento());
         novoUsuario.setTelefone(dados.telefone());
         novoUsuario.setSenhaHash(senhaCriptografada);
@@ -53,11 +53,16 @@ public class UsuarioService {
         
         Usuario usuario;
 
-        // 1. Buscar por email ou CPF
-        if (dados.loginIdentifier().contains("@")) {
-            usuario = usuarioRepository.findByEmail(dados.loginIdentifier());
+        if (dados.loginIdentifier() == null || dados.senha() == null) {
+            throw new RuntimeException("Credenciais inválidas");
+        }
+
+        // 1. Buscar por email (sem diferenciar maiúsculas) ou CPF (só dígitos)
+        String identificador = dados.loginIdentifier().trim();
+        if (identificador.contains("@")) {
+            usuario = usuarioRepository.findByEmail(identificador.toLowerCase());
         } else {
-            usuario = usuarioRepository.findByCpf(dados.loginIdentifier());
+            usuario = usuarioRepository.findByCpf(identificador.replaceAll("\\D", ""));
         }
 
         // 2. Verificar se encontrou
