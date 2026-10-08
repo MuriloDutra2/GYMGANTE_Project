@@ -31,6 +31,10 @@ public class Anamnese {
     @Column(name = "treino_json", columnDefinition = "TEXT")
     private String treinoJson;
 
+    // Data em que o plano atual foi gerado (o painel só conta faltas a partir dela)
+    @Column(name = "plano_desde")
+    private java.time.LocalDate planoDesde;
+
     // Construtor vazio (obrigatório para JPA)
     public Anamnese() {
     }
@@ -91,6 +95,14 @@ public class Anamnese {
 
     public void setTemRestricao(Boolean temRestricao) {
         this.temRestricao = temRestricao;
+    }
+
+    public java.time.LocalDate getPlanoDesde() {
+        return planoDesde;
+    }
+
+    public void setPlanoDesde(java.time.LocalDate planoDesde) {
+        this.planoDesde = planoDesde;
     }
 
     public String getTreinoJson() {

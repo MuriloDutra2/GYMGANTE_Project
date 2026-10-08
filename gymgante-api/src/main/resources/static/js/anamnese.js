@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         loadingTitle.textContent = '✅ Treino gerado com sucesso!';
                     }
                     if (loadingText) {
-                        loadingText.textContent = 'Redirecionando para visualizar seu treino...';
+                        loadingText.textContent = 'Redirecionando para o seu painel...';
                     }
                     
                     // Salvar dados da anamnese e treino
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     
                     // Aguardar um pouco antes de redirecionar para mostrar a mensagem
                     setTimeout(() => {
-                        window.location.href = 'treino.html';
+                        window.location.href = 'dashboard.html';
                     }, 1500);
                 } else if (data.tipo === 'AVISO') {
                     loadingOverlay.classList.add('hidden');
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     
                     showToast('Treino atualizado com sucesso!', 'success', 2000);
                     setTimeout(() => {
-                        window.location.href = 'treino.html';
+                        window.location.href = 'dashboard.html';
                     }, 1500);
                 } else {
                     throw new Error('Erro ao atualizar treino.');

@@ -17,6 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             temTreino = temTreino || JSON.parse(localStorage.getItem('treinoData') || '{}').tipo === 'PLANO_TREINO';
         } catch (_) { /* ignora */ }
-        voltar.setAttribute('href', temTreino ? 'treino.html' : 'index.html');
+        voltar.setAttribute('href', temTreino ? 'dashboard.html' : 'index.html');
     }
 });

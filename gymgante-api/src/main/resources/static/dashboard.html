@@ -3,28 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - GymGante</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <title>Painel - GymGante</title>
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
-    <div class="dashboard-container">
-        <header class="dashboard-header">
-            <h1>🏋️ GymGante - Sistema de Treinos com IA</h1>
-            <p>Seu treino personalizado está sendo carregado...</p>
-        </header>
+    <header class="topo">
+        <a class="marca" href="dashboard.html">💪 GymGante</a>
+        <nav>
+            <a href="dashboard.html" class="ativo">Painel</a>
+            <a href="treino.html">Plano completo</a>
+            <a href="anamnese.html?update=true">Novo treino</a>
+            <a href="#" id="link-sair">Sair</a>
+        </nav>
+    </header>
 
-        <div class="loading-content">
-            <div class="loading-spinner"></div>
-            <h3>🔄 Verificando seu treino...</h3>
-            <p>Analisando seu perfil e histórico de treinos.</p>
+    <main class="painel">
+        <section class="saudacao">
+            <h1 id="saudacao">Olá!</h1>
+            <p id="data-hoje"></p>
+        </section>
+
+        <div id="carregando" class="carregando">
+            <div class="spinner"></div>
+            <p>Carregando seu painel... <span class="dica">(na primeira vez o treino pode levar alguns segundos para ser gerado)</span></p>
         </div>
 
-        <footer class="dashboard-footer">
-            <p>⏳ Isso pode levar alguns segundos...</p>
-        </footer>
-    </div>
+        <div id="erro" class="cartao erro hidden">
+            <h2>Não foi possível carregar o painel</h2>
+            <p id="erro-msg"></p>
+            <button id="btn-tentar" class="btn">Tentar novamente</button>
+        </div>
 
-    <script src="/js/config.js"></script>
-    <script src="/js/dashboard.js"></script>
+        <div id="conteudo" class="hidden">
+            <section class="resumo" id="resumo"></section>
+
+            <section class="cartao" id="hoje"></section>
+
+            <section class="estatisticas" id="estatisticas"></section>
+
+            <section class="cartao">
+                <h2>Semana</h2>
+                <div class="semana" id="semana"></div>
+            </section>
+
+            <section class="cartao">
+                <h2>Histórico recente</h2>
+                <ul class="historico" id="historico"></ul>
+            </section>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/nav.js"></script>
 </body>
 </html>

@@ -8,7 +8,8 @@ public record AnamneseComTreinoDto(
     String nivel,
     Boolean temRestricao,
     String treino,  // O treino gerado (markdown/texto)
-    String tipo     // "PLANO_TREINO" ou "AVISO"
+    String tipo,    // "PLANO_TREINO" ou "AVISO"
+    String planoDesde // data (yyyy-MM-dd) em que o plano foi gerado; pode ser nulo
 ) {}
 
 

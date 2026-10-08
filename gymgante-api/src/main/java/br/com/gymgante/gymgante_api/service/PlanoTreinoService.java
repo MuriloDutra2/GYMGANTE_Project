@@ -78,20 +78,32 @@ public class PlanoTreinoService {
     }
 
     private String planoDeExemplo(DadosCadastroAnamnese dados) {
-        return """
-            {"titulo":"Plano de exemplo - %s","descricao":"Treino fictício do ambiente local (%s, %s).",
-             "dias":[
-              {"nome":"Treino A","grupoMuscular":"Peito e Tríceps","exercicios":[
-                {"nome":"Supino reto","series":"4x","repeticoes":"8-12","descanso":"60-90 s","observacoes":"Controle a descida"},
-                {"nome":"Tríceps corda","series":"3x","repeticoes":"12","descanso":"60 s"}]},
-              {"nome":"Treino B","grupoMuscular":"Costas e Bíceps","exercicios":[
-                {"nome":"Puxada frontal","series":"4x","repeticoes":"10","descanso":"60-90 s"},
-                {"nome":"Rosca direta","series":"3x","repeticoes":"12","descanso":"60 s"}]},
-              {"nome":"Treino C","grupoMuscular":"Pernas","exercicios":[
-                {"nome":"Agachamento livre","series":"4x","repeticoes":"8-10","descanso":"90 s","observacoes":"Mantenha a coluna neutra"},
-                {"nome":"Leg press","series":"3x","repeticoes":"12","descanso":"90 s"}]}
-             ]}
-            """.formatted(dados.objetivoPrincipal(), dados.nivel(), dados.diasPorSemana());
+        String[][] grupos = {
+            {"Peito e Tríceps", "Supino reto", "Crucifixo", "Tríceps corda"},
+            {"Costas e Bíceps", "Puxada frontal", "Remada curvada", "Rosca direta"},
+            {"Pernas", "Agachamento livre", "Leg press", "Panturrilha em pé"},
+            {"Ombros", "Desenvolvimento", "Elevação lateral", "Encolhimento"},
+            {"Pernas e Glúteos", "Stiff", "Afundo", "Elevação pélvica"},
+            {"Braços e Core", "Rosca martelo", "Tríceps testa", "Abdominal"}
+        };
+        int n = 3;
+        var m = java.util.regex.Pattern.compile("(\\d)x").matcher(String.valueOf(dados.diasPorSemana()));
+        if (m.find()) n = Math.max(1, Math.min(6, Integer.parseInt(m.group(1))));
+
+        StringBuilder dias = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            String[] g = grupos[i % grupos.length];
+            if (i > 0) dias.append(',');
+            dias.append("{\"nome\":\"Treino ").append((char) ('A' + i)).append("\",\"grupoMuscular\":\"").append(g[0]).append("\",\"exercicios\":[");
+            for (int j = 1; j < g.length; j++) {
+                if (j > 1) dias.append(',');
+                dias.append("{\"nome\":\"").append(g[j]).append("\",\"series\":\"4x\",\"repeticoes\":\"8-12\",\"descanso\":\"60-90 s\",\"observacoes\":\"Controle a descida\"}");
+            }
+            dias.append("]}");
+        }
+        return "{\"titulo\":\"Plano de exemplo - " + dados.objetivoPrincipal()
+                + "\",\"descricao\":\"Treino fictício do ambiente local (" + dados.nivel() + ", " + dados.diasPorSemana()
+                + ").\",\"dias\":[" + dias + "]}";
     }
 
     private String limparMarkdown(String texto) {

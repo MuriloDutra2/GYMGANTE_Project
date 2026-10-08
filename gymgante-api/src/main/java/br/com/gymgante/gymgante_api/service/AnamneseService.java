@@ -76,6 +76,7 @@ public class AnamneseService {
                         usuarioId, anamnese.getObjetivoPrincipal(), anamnese.getDiasPorSemana(),
                         anamnese.getNivel(), false);
                 anamnese.setTreinoJson(planoTreinoService.gerarPlanoTreino(dados));
+                anamnese.setPlanoDesde(java.time.LocalDate.now());
                 anamneseRepository.save(anamnese);
             }
             tipo = "PLANO_TREINO";
@@ -85,7 +86,8 @@ public class AnamneseService {
         return new AnamneseComTreinoDto(
                 anamnese.getId(), usuarioId, anamnese.getObjetivoPrincipal(),
                 anamnese.getDiasPorSemana(), anamnese.getNivel(), anamnese.getTemRestricao(),
-                treino, tipo);
+                treino, tipo,
+                anamnese.getPlanoDesde() == null ? null : anamnese.getPlanoDesde().toString());
     }
 
     /** Salva a anamnese e, se não houver restrição, gera e guarda o treino. */
@@ -99,6 +101,7 @@ public class AnamneseService {
         // Se a IA falhar, a exceção desfaz a transação e nada é salvo pela metade
         String plano = planoTreinoService.gerarPlanoTreino(dados);
         anamnese.setTreinoJson(plano);
+        anamnese.setPlanoDesde(java.time.LocalDate.now());
         anamneseRepository.save(anamnese);
         return new DadosPlanoTreino("PLANO_TREINO", plano);
     }

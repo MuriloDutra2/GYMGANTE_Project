@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 temRestricao: data.temRestricao
             }));
             localStorage.setItem('treinoData', JSON.stringify({ tipo: data.tipo, treino: data.treino }));
-            window.location.href = 'treino.html';
+            window.location.href = 'dashboard.html';
         } catch (error) {
             console.error('❌ Erro ao verificar treino:', error);
                         window.location.href = 'anamnese.html';
