@@ -15,10 +15,10 @@ async function verificarTreinoExistente() {
     const userId = localStorage.getItem('userId');
     const loading = document.getElementById('loading');
 
-    loading.style.display = 'flex';
+    if (loading) loading.style.display = 'flex';
 
     try {
-        fetch('${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANAMNESE}/${userId}');
+        const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ANAMNESE}/${userId}`);
         
         if (response.ok) {
             // Usuário TEM treino - Redirecionar para treino
@@ -34,6 +34,6 @@ async function verificarTreinoExistente() {
         console.error('Erro na verificação:', error);
         window.location.href = '/anamnese.html';
     } finally {
-        loading.style.display = 'none';
+        if (loading) loading.style.display = 'none';
     }
 }

@@ -1,7 +1,12 @@
 // Configurações da API
+// Em localhost o Spring serve o front e a API juntos (BASE_URL vazio).
+// Em produção (Netlify) o front chama a API hospedada no Render.
+const RENDER_API_URL = 'https://gymgante-api.onrender.com'; // ajuste se o Render gerar outra URL
+const IS_LOCAL = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
 const API_CONFIG = {
-   
-    BASE_URL: '', 
+
+    BASE_URL: IS_LOCAL ? '' : RENDER_API_URL,
     
     ENDPOINTS: {
         USUARIOS: {
@@ -10,7 +15,7 @@ const API_CONFIG = {
         },
         ANAMNESE: '/anamnese'
     },
-    TIMEOUT: 30000 // 30 segundos
+    TIMEOUT: 60000 // 60 segundos (IA + cold start do Render)
 };
 
 // Função auxiliar para fazer requisições com timeout

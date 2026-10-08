@@ -1,0 +1,7 @@
+[build]
+  publish = "gymgante-api/src/main/resources/static"
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
