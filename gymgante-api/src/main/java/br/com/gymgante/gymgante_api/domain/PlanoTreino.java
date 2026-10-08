@@ -43,7 +43,7 @@ public class PlanoTreino {
     // --- O TREINO EM SI (A MÁGICA) ---
 
     // Esta coluna vai guardar o JSON completo do treino
-    @Column(name = "treino_json", columnDefinition = "NVARCHAR(MAX)", nullable = false)
+    @Column(name = "treino_json", columnDefinition = "TEXT", nullable = false)
     private String treinoJson;
 
   

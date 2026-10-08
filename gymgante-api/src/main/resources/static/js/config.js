@@ -1,12 +1,8 @@
 // Configurações da API
-// Em localhost o Spring serve o front e a API juntos (BASE_URL vazio).
-// Em produção (Netlify) o front chama a API hospedada no Render.
-const RENDER_API_URL = 'https://gymgante-api.onrender.com'; // ajuste se o Render gerar outra URL
-const IS_LOCAL = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-
+// Front e API são servidos pelo mesmo serviço (Spring), então a URL base é relativa.
 const API_CONFIG = {
 
-    BASE_URL: IS_LOCAL ? '' : RENDER_API_URL,
+    BASE_URL: '',
     
     ENDPOINTS: {
         USUARIOS: {
