@@ -101,7 +101,7 @@ async function carregar() {
         }
         if (!resp.ok) {
             throw new Error(resp.status === 503
-                ? 'O serviço de IA está indisponível no momento. Tente novamente em instantes.'
+                ? 'Não foi possível gerar seu treino agora. Tente novamente em instantes.'
                 : 'Erro ao buscar seu treino.');
         }
 
@@ -237,7 +237,7 @@ function renderHoje(hoje) {
         const detalhes = [
             e.series ? `Séries: ${esc(e.series)}` : '',
             e.repeticoes ? `Reps: ${esc(e.repeticoes)}` : '',
-            e.descanso ? `Descanso: ${esc(e.descanso)}` : ''
+            e.descanso && e.descanso !== '-' ? `Descanso: ${esc(e.descanso)}` : ''
         ].filter(Boolean).join(' · ');
         return `<li class="exercicio ${feito ? 'feito' : ''}" data-i="${i}" role="checkbox" aria-checked="${feito}" tabindex="0">
             <span class="caixa">✓</span>

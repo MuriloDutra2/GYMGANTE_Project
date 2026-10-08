@@ -27,7 +27,7 @@ public class Anamnese {
     @Column(name = "tem_restricao", nullable = false)
     private Boolean temRestricao;
 
-    // Treino gerado pela IA (guardado para não regenerar a cada acesso)
+    // Treino gerado (regras ou IA), guardado para não regenerar a cada acesso
     @Column(name = "treino_json", columnDefinition = "TEXT")
     private String treinoJson;
 

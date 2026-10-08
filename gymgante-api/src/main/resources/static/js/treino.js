@@ -290,7 +290,7 @@ function renderizarTreinoEstruturado(treino, container) {
                                 <span class="info-label">Repetições:</span>
                                 <span class="info-value">${escapeHtml(exercicio.repeticoes || '-')}</span>
                             </div>
-                            ${exercicio.descanso ? `
+                            ${exercicio.descanso && exercicio.descanso !== '-' ? `
                             <div class="info-item">
                                 <span class="info-label">Descanso:</span>
                                 <span class="info-value">${escapeHtml(exercicio.descanso)}</span>

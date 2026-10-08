@@ -7,6 +7,7 @@ import br.com.gymgante.gymgante_api.dto.DadosCadastroAnamnese;
 import br.com.gymgante.gymgante_api.dto.DadosPlanoTreino;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -17,8 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// Fase de IA: só entra em uso com TREINO_GERADOR=gemini (padrão é o gerador por regras)
 @Service
-public class PlanoTreinoService {
+@ConditionalOnProperty(name = "treino.gerador", havingValue = "gemini")
+public class PlanoTreinoService implements GeradorDeTreino {
 
     @Value("${gemini.api.key}")
     private String apiKey;
@@ -34,6 +37,10 @@ public class PlanoTreinoService {
             return;
         }
         String k = apiKey == null ? "" : apiKey;
+        if (k.isBlank()) {
+            System.out.println("⚠️ Gemini ativo mas GEMINI_API_KEY está vazia");
+            return;
+        }
         System.out.println("🔑 Gemini: chave com " + k.trim().length() + " caracteres, começa com 'AIza': "
                 + k.trim().startsWith("AIza") + ", espaços/quebras nas pontas: " + !k.equals(k.trim()));
     }
@@ -51,6 +58,11 @@ public class PlanoTreinoService {
     // Se o primeiro modelo estiver sobrecarregado (503/429), tenta os seguintes
     private static final List<String> MODELOS = List.of("gemini-flash-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite");
     private static final long LIMITE_TOTAL_MS = 35_000;
+
+    @Override
+    public String gerar(DadosCadastroAnamnese dados, String planoAnterior) {
+        return gerarPlanoTreino(dados);
+    }
 
     public String gerarPlanoTreino(DadosCadastroAnamnese dados) {
         if (mock) {

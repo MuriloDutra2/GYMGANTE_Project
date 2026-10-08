@@ -75,12 +75,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const loadingTitle = loadingOverlay.querySelector('h3');
         const loadingText = loadingOverlay.querySelector('p');
         if (loadingTitle) {
-            loadingTitle.textContent = isUpdate ? '🔄 Atualizando seu treino...' : '🤖 Gerando seu treino personalizado...';
+            loadingTitle.textContent = isUpdate ? '🔄 Atualizando seu treino...' : '💪 Montando seu treino...';
         }
         if (loadingText) {
             loadingText.textContent = isUpdate 
-                ? 'Isso pode levar alguns segundos. Aguarde!' 
-                : 'Isso pode levar até 15 segundos. Aguarde!';
+                ? 'Só um instante...' 
+                : 'Só um instante...';
         }
 
         const payload = {
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Atualizar mensagem durante a requisição
             if (loadingText) {
-                loadingText.textContent = 'Enviando dados e gerando treino com IA...';
+                loadingText.textContent = 'Montando seu treino...';
             }
 
             const response = await fetchWithTimeout(url, {
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (error.message.includes('conexão') || error.message.includes('network')) {
                 mensagemErro = 'Erro de conexão. Verifique sua internet e tente novamente.';
             } else {
-                mensagemErro = error.message || 'Erro ao gerar treino. Verifique a conexão com a API de IA.';
+                mensagemErro = error.message || 'Erro ao gerar treino. Tente novamente.';
             }
             
             showToast(mensagemErro, 'error', 5000);

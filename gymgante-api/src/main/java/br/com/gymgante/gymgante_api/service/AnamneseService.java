@@ -24,7 +24,7 @@ public class AnamneseService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private PlanoTreinoService planoTreinoService;
+    private GeradorDeTreino geradorDeTreino;
 
     @Transactional
     public DadosPlanoTreino salvarAnamneseEBuscarPlano(DadosCadastroAnamnese dados) {
@@ -55,7 +55,7 @@ public class AnamneseService {
     }
 
     /**
-     * Busca a anamnese do usuário e o treino salvo. Só chama a IA se ainda não houver treino guardado.
+     * Busca a anamnese do usuário e o treino salvo. Só chama o gerador se ainda não houver treino guardado.
      */
     @Transactional
     public AnamneseComTreinoDto buscarAnamneseETreino(Long usuarioId) {
@@ -75,7 +75,7 @@ public class AnamneseService {
                 DadosCadastroAnamnese dados = new DadosCadastroAnamnese(
                         usuarioId, anamnese.getObjetivoPrincipal(), anamnese.getDiasPorSemana(),
                         anamnese.getNivel(), false);
-                anamnese.setTreinoJson(planoTreinoService.gerarPlanoTreino(dados));
+                anamnese.setTreinoJson(geradorDeTreino.gerar(dados, null));
                 anamnese.setPlanoDesde(java.time.LocalDate.now());
                 anamneseRepository.save(anamnese);
             }
@@ -98,8 +98,9 @@ public class AnamneseService {
             return new DadosPlanoTreino("AVISO", AVISO_RESTRICAO);
         }
 
-        // Se a IA falhar, a exceção desfaz a transação e nada é salvo pela metade
-        String plano = planoTreinoService.gerarPlanoTreino(dados);
+        // Se o gerador falhar, a exceção desfaz a transação e nada é salvo pela metade.
+        // O plano anterior é lido ANTES de ser sobrescrito, para o gerador não devolver o mesmo.
+        String plano = geradorDeTreino.gerar(dados, anamnese.getTreinoJson());
         anamnese.setTreinoJson(plano);
         anamnese.setPlanoDesde(java.time.LocalDate.now());
         anamneseRepository.save(anamnese);

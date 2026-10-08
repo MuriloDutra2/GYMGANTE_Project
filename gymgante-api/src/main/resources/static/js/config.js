@@ -11,7 +11,7 @@ const API_CONFIG = {
         },
         ANAMNESE: '/anamnese'
     },
-    TIMEOUT: 60000 // 60 segundos (IA + cold start do Render)
+    TIMEOUT: 60000 // 60 segundos (cold start do Render)
 };
 
 // Função auxiliar para fazer requisições com timeout
