@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!userId) {
         console.log('⚠️ Usuário não está logado. Redirecionando para login...');
-        showToast('Você precisa fazer login para acessar seu treino.', 'error');
+        showToast('Você precisa entrar para acessar seu treino.', 'error');
         setTimeout(() => {
             window.location.href = 'login.html';
         }, 2000);
@@ -245,7 +245,7 @@ function renderizarTreinoEstruturado(treino, container) {
         
         let html = `
             <div class="treino-header">
-                <h1>${escapeHtml(treino.titulo || 'Plano de Treino')}</h1>
+                <h2>${escapeHtml(treino.titulo || 'Plano de Treino')}</h2>
                 ${treino.descricao ? `<p class="treino-descricao">${escapeHtml(treino.descricao)}</p>` : ''}
             </div>
             <div class="treino-dias-grid">
@@ -264,8 +264,11 @@ function renderizarTreinoEstruturado(treino, container) {
             html += `
                 <div class="dia-card-treino" data-dia="${index}">
                     <div class="dia-header">
-                        <h2>${escapeHtml(dia.nome || `Dia ${index + 1}`)}</h2>
-                        ${dia.grupoMuscular ? `<span class="grupo-muscular">${escapeHtml(dia.grupoMuscular)}</span>` : ''}
+                        <div class="dia-icones" aria-hidden="true">${Muscle.doDia(dia.grupoMuscular).map((g) => Muscle.icone(g, 34)).join('')}</div>
+                        <div>
+                            <h3>${escapeHtml(dia.nome || `Dia ${index + 1}`)}</h3>
+                            ${dia.grupoMuscular ? `<span class="grupo-muscular">${escapeHtml(dia.grupoMuscular)}</span>` : ''}
+                        </div>
                     </div>
                     <div class="exercicios-lista">
             `;
@@ -299,7 +302,6 @@ function renderizarTreinoEstruturado(treino, container) {
                         </div>
                         ${exercicio.observacoes ? `
                         <div class="exercicio-obs">
-                            <span class="obs-icon">💡</span>
                             <span>${escapeHtml(exercicio.observacoes)}</span>
                         </div>
                         ` : ''}
@@ -310,7 +312,7 @@ function renderizarTreinoEstruturado(treino, container) {
             if (dia.observacoes) {
                 html += `
                     <div class="dia-observacoes">
-                        <strong>📝 Observações:</strong>
+                        <strong>Observações</strong>
                         <p>${escapeHtml(dia.observacoes)}</p>
                     </div>
                 `;
@@ -370,11 +372,9 @@ function mostrarAvisoRestricao(mensagem) {
     const container = document.getElementById('treino-container');
     container.innerHTML = `
         <div class="aviso-restricao">
-            <h2>⚠️ Aviso Importante</h2>
-            <p>${mensagem}</p>
-            <button onclick="window.location.href='anamnese.html'" class="btn-primary">
-                Atualizar Anamnese
-            </button>
+            <h2>Aviso importante</h2>
+            <p>${escapeHtml(mensagem)}</p>
+            <a class="btn btn-primary" href="anamnese.html?update=true">Atualizar anamnese</a>
         </div>
     `;
 }

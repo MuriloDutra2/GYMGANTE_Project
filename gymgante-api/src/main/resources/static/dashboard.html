@@ -1,61 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel - GymGante</title>
-    <link rel="stylesheet" href="css/dashboard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f8fc">
+  <title>Painel - GymGante</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/caderno.css">
+  <link rel="stylesheet" href="css/telas.css">
+  <link rel="stylesheet" href="css/painel.css">
 </head>
 <body>
+  <div class="page">
     <header class="topo">
-        <a class="marca" href="dashboard.html">💪 GymGante</a>
-        <nav>
-            <a href="dashboard.html" class="ativo">Painel</a>
-            <a href="treino.html">Plano completo</a>
-            <a href="anamnese.html?update=true">Novo treino</a>
-            <a href="#" id="link-sair">Sair</a>
-        </nav>
+      <a class="marca" href="dashboard.html" aria-label="GymGante, painel">
+        <svg aria-hidden="true"><use href="img/sprite.svg#logo-mark"></use></svg>
+        GymGante
+      </a>
+      <nav aria-label="Principal">
+        <a href="dashboard.html" aria-current="page">Painel</a>
+        <a href="treino.html">Plano<span class="hide-sm"> completo</span></a>
+        <a class="hide-sm" href="anamnese.html?update=true">Novo treino</a>
+        <a href="#" id="link-sair">Sair</a>
+      </nav>
     </header>
 
     <main class="painel">
-        <section class="saudacao">
-            <h1 id="saudacao">Olá!</h1>
-            <p id="data-hoje"></p>
+      <section class="saudacao">
+        <h1 id="saudacao">Olá.</h1>
+        <p class="hand" id="data-hoje"></p>
+      </section>
+
+      <div id="carregando" class="painel-carregando" role="status" aria-live="polite">
+        <div class="traco" aria-hidden="true"></div>
+        <p>Abrindo o seu caderno</p>
+      </div>
+
+      <div id="erro" class="folha painel-erro hidden" role="alert">
+        <h2>Não foi possível abrir o painel</h2>
+        <p id="erro-msg"></p>
+        <button id="btn-tentar" class="btn btn-primary" type="button">Tentar de novo</button>
+      </div>
+
+      <div id="conteudo" class="hidden">
+        <dl class="resumo-linha" id="resumo"></dl>
+
+        <div class="painel-grade">
+          <section class="folha hoje" id="hoje" aria-live="polite"></section>
+
+          <aside class="painel-lado">
+            <section id="estatisticas" aria-labelledby="t-resumo">
+              <h2 id="t-resumo">Resumo</h2>
+              <dl class="rol" id="stats"></dl>
+            </section>
+            <section id="sec-historico" aria-labelledby="t-hist">
+              <h2 id="t-hist">Histórico recente</h2>
+              <ul class="historico" id="historico"></ul>
+            </section>
+          </aside>
+        </div>
+
+        <section id="sec-semana" class="painel-semana" aria-labelledby="t-semana">
+          <h2 id="t-semana">Semana</h2>
+          <ol class="semana-grid" id="semana"></ol>
         </section>
-
-        <div id="carregando" class="carregando">
-            <div class="spinner"></div>
-            <p>Carregando seu painel...</p>
-        </div>
-
-        <div id="erro" class="cartao erro hidden">
-            <h2>Não foi possível carregar o painel</h2>
-            <p id="erro-msg"></p>
-            <button id="btn-tentar" class="btn">Tentar novamente</button>
-        </div>
-
-        <div id="conteudo" class="hidden">
-            <section class="resumo" id="resumo"></section>
-
-            <section class="cartao" id="hoje"></section>
-
-            <section class="estatisticas" id="estatisticas"></section>
-
-            <section class="cartao">
-                <h2>Semana</h2>
-                <div class="semana" id="semana"></div>
-            </section>
-
-            <section class="cartao">
-                <h2>Histórico recente</h2>
-                <ul class="historico" id="historico"></ul>
-            </section>
-        </div>
+      </div>
     </main>
+  </div>
 
-    <script src="js/config.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script src="js/nav.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/muscle.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/nav.js"></script>
 </body>
 </html>

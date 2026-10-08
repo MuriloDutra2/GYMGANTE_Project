@@ -1,0 +1,142 @@
+/* ==========================================================================
+   PAINEL: o treino de hoje como página de caderno
+   ========================================================================== */
+
+.painel { display: grid; gap: 28px; padding-block: clamp(16px, 3vh, 36px) 72px; }
+.saudacao { display: grid; gap: 4px; }
+.saudacao h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
+#data-hoje::first-letter { text-transform: uppercase; }
+
+#conteudo { display: grid; gap: 32px; }
+
+/* carregamento e erro */
+.painel-carregando { display: grid; gap: 10px; justify-items: start; padding: 24px 0; color: var(--ink-2); font-weight: 700; }
+.painel-erro { display: grid; gap: 12px; padding: 24px; max-width: 34rem; border-color: var(--red); }
+.painel-erro .btn { justify-self: start; }
+
+/* objetivo, frequência e nível numa linha riscada (não são métricas) */
+.resumo-linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 36px;
+  padding-bottom: 12px;
+  border-bottom: var(--line) solid var(--ink);
+}
+.resumo-linha div { display: grid; gap: 0; }
+.resumo-linha dt { font-size: 0.85rem; color: var(--ink-2); }
+.resumo-linha div { min-width: 0; }
+.resumo-linha dd { overflow-wrap: anywhere; font-family: var(--f-display); font-stretch: 84%; font-weight: 800; font-size: 1.25rem; }
+
+.painel-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+}
+.painel-lado { display: grid; gap: 32px; }
+.painel-lado h2, .painel-semana h2 { font-size: 1.6rem; margin-bottom: 10px; }
+
+/* ---------- treino de hoje ---------- */
+.hoje { padding: clamp(18px, 2.4vw, 30px); }
+.hoje h2 { font-size: clamp(1.7rem, 3vw, 2.3rem); }
+.hoje-cab { display: flex; align-items: center; gap: 14px; padding-bottom: 14px; border-bottom: var(--line) solid var(--ink); }
+.hoje-cab .muscles { display: flex; gap: 4px; flex: none; color: var(--ink); }
+.hoje-cab .grupo { color: var(--ink-2); font-weight: 700; }
+.muscle { width: 36px; height: 36px; color: var(--ink); flex: none; }
+
+.regua-linha { display: flex; align-items: center; gap: 14px; margin: 16px 0 6px; }
+.regua { flex: 1; height: 10px; border: var(--line) solid var(--ink); border-radius: 2px; background: var(--paper); overflow: hidden; }
+.regua i { display: block; height: 100%; background: var(--red); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform 320ms var(--ease-out); }
+.regua-txt { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.exercicios { list-style: none; display: grid; }
+.ex {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  min-height: 72px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--grid-strong);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: background-color 120ms var(--ease-out);
+}
+.ex:last-child { border-bottom: 0; }
+.ex:active { background: var(--red-wash); }
+.ex .box { pointer-events: none; margin-top: 2px; }
+.ex .muscle { width: 32px; height: 32px; margin-top: 2px; }
+.ex > span { min-width: 0; }
+.ex-nome, .ex-det, .ex-obs { overflow-wrap: anywhere; }
+.ex-nome { position: relative; display: inline-block; max-width: 100%; font-weight: 700; line-height: 1.25; transition: color 160ms var(--ease-out); }
+.ex-nome::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: calc(54% - 3px);
+  height: 7px;
+  /* traço de caneta: levemente curvo, de espessura irregular */
+  background: no-repeat center / 100% 100% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8' preserveAspectRatio='none'%3E%3Cpath d='M1 5 C18 2.2 34 6.4 52 3.6 S92 5.4 119 2.6' fill='none' stroke='%23c8322a' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 240ms var(--ease-out);
+}
+.ex.feito .ex-nome { color: var(--ink-2); }
+.ex.feito .ex-nome::after { transform: scaleX(1); }
+.ex-det { display: block; font-size: 0.92rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.ex-obs { display: block; margin-top: 2px; font-size: 0.9rem; color: var(--red-ink); }
+
+.fechamento { margin-top: 14px; }
+.hoje-descanso { display: grid; gap: 10px; justify-items: start; }
+.hoje-descanso svg { width: 40px; height: 40px; }
+.hoje-aviso .btn { margin-top: 12px; }
+
+/* ---------- resumo em linhas ---------- */
+.rol { display: grid; border-top: var(--line) solid var(--ink); }
+.rol > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--grid-strong);
+}
+.rol dt { color: var(--ink-2); }
+.rol dd { font-family: var(--f-display); font-stretch: 84%; font-weight: 800; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+
+/* ---------- histórico ---------- */
+.historico { list-style: none; display: grid; border-top: var(--line) solid var(--ink); }
+.historico li {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--grid-strong);
+  font-size: 0.97rem;
+}
+.historico .quando { color: var(--ink-2); white-space: nowrap; }
+.historico .vazio { color: var(--ink-2); display: block; }
+
+/* ---------- semana no painel ---------- */
+.painel-semana .dia-col .estado { font-size: 0.85rem; font-weight: 700; color: var(--ink-2); margin-top: auto; }
+.painel-semana .dia-col--completo { background: var(--paper-2); }
+.painel-semana .dia-col--perdido .estado { color: var(--red-ink); }
+.painel-semana .box { pointer-events: none; }
+.painel-semana .dia-col .box + .estado { margin-top: 0; }
+
+@media (max-width: 960px) {
+  .painel-grade { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  .hoje-cab .muscles { display: none; }
+  .ex { gap: 12px; min-height: 76px; }
+  .painel-semana .dia-col .estado { grid-column: 2; }
+}
+
+@media (max-width: 720px) {
+  .painel-semana .dia-col .sigla { grid-row: 1 / span 3; }
+  .painel-semana .dia-col .box, .painel-semana .dia-col--folga svg { grid-row: 1 / span 3; }
+}

@@ -46,3 +46,9 @@ target/
 **/target/
 
 .env
+# Impeccable: estado de sessao e capturas de revisao (design.json e surfaces/ ficam versionados)
+.impeccable/questions/
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/build/
+.impeccable/hook.cache.json

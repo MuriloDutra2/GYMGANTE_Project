@@ -1,78 +1,87 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anamnese - GymGante</title>
-    <link rel="stylesheet" href="css/anamnese.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f8fc">
+  <title>Seu treino - GymGante</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/caderno.css">
+  <link rel="stylesheet" href="css/telas.css">
 </head>
 <body>
-    <div class="container">
-        <nav class="topo-nav">
-            <a href="dashboard.html" id="link-voltar">← Voltar</a>
-            <a href="#" id="link-sair">Sair</a>
-        </nav>
-        <header>
-            <h1>💪 Crie Seu Treino Personalizado</h1>
-            <p>Responda às perguntas abaixo para montar seu plano de treino personalizado.</p>
-        </header>
+  <div class="page">
+    <header class="topo">
+      <a class="marca" href="dashboard.html" aria-label="GymGante, painel">
+        <svg aria-hidden="true"><use href="img/sprite.svg#logo-mark"></use></svg>
+        GymGante
+      </a>
+      <nav aria-label="Principal">
+        <a id="link-voltar" href="dashboard.html">Voltar</a>
+        <a id="link-sair" href="#">Sair</a>
+      </nav>
+    </header>
 
-        <form id="form-anamnese">
-            <div class="form-group">
-                <label for="objetivo">🎯 Qual seu objetivo principal?</label>
-                <select id="objetivo" name="objetivo" required>
-                    <option value="">Selecione...</option>
-                    <option value="Ganho de Massa Muscular">Ganho de Massa Muscular</option>
-                    <option value="Perda de Gordura">Perda de Gordura</option>
-                    <option value="Definição Muscular">Definição Muscular</option>
-                    <option value="Hipertrofia">Hipertrofia</option>
-                </select>
-            </div>
+    <main class="tela">
+      <div class="tela-texto">
+        <h1 class="reveal" style="--i:0">Três respostas, um treino.</h1>
+        <p class="lede reveal" style="--i:1">Com objetivo, frequência e nível, o plano é montado na hora e fica no seu painel.</p>
+      </div>
 
-            <div class="form-group">
-                <label for="diasPorSemana">📅 Quantos dias por semana você treinaria?</label>
-                <select id="diasPorSemana" name="diasPorSemana" required>
-                    <option value="">Selecione...</option>
-                    <option value="3x por semana">3x por semana</option>
-                    <option value="4x por semana">4x por semana</option>
-                    <option value="5x por semana">5x por semana</option>
-                    <option value="6x por semana">6x por semana</option>
-                </select>
-            </div>
+      <form id="form-anamnese" class="folha form-folha reveal" style="--i:2" novalidate>
+        <fieldset class="ask">
+          <legend><span class="ask-n" aria-hidden="true">1</span>Qual é o seu objetivo?</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="objetivo" value="Ganho de Massa Muscular"><span class="box" aria-hidden="true"></span><span class="t">Ganho de massa</span></label>
+            <label class="choice"><input type="radio" name="objetivo" value="Hipertrofia"><span class="box" aria-hidden="true"></span><span class="t">Hipertrofia</span></label>
+            <label class="choice"><input type="radio" name="objetivo" value="Definição Muscular"><span class="box" aria-hidden="true"></span><span class="t">Definição</span></label>
+            <label class="choice"><input type="radio" name="objetivo" value="Perda de Gordura"><span class="box" aria-hidden="true"></span><span class="t">Perda de gordura</span></label>
+          </div>
+        </fieldset>
 
-            <div class="form-group">
-                <label for="nivel">📊 Qual seu nível de experiência?</label>
-                <select id="nivel" name="nivel" required>
-                    <option value="">Selecione...</option>
-                    <option value="Iniciante">Iniciante</option>
-                    <option value="Intermediário">Intermediário</option>
-                    <option value="Avançado">Avançado</option>
-                </select>
-            </div>
+        <fieldset class="ask">
+          <legend><span class="ask-n" aria-hidden="true">2</span>Quantos dias por semana?</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="diasPorSemana" value="3x por semana"><span class="box" aria-hidden="true"></span><span class="t">3 dias</span></label>
+            <label class="choice"><input type="radio" name="diasPorSemana" value="4x por semana"><span class="box" aria-hidden="true"></span><span class="t">4 dias</span></label>
+            <label class="choice"><input type="radio" name="diasPorSemana" value="5x por semana"><span class="box" aria-hidden="true"></span><span class="t">5 dias</span></label>
+            <label class="choice"><input type="radio" name="diasPorSemana" value="6x por semana"><span class="box" aria-hidden="true"></span><span class="t">6 dias</span></label>
+          </div>
+        </fieldset>
 
-            <div class="form-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="temRestricao" name="temRestricao">
-                    <span>🩺 Tenhos lesão/restrição médica</span>
-                </label>
-            </div>
+        <fieldset class="ask">
+          <legend><span class="ask-n" aria-hidden="true">3</span>Qual é o seu nível?</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="nivel" value="Iniciante"><span class="box" aria-hidden="true"></span><span class="t">Iniciante</span></label>
+            <label class="choice"><input type="radio" name="nivel" value="Intermediário"><span class="box" aria-hidden="true"></span><span class="t">Intermediário</span></label>
+            <label class="choice"><input type="radio" name="nivel" value="Avançado"><span class="box" aria-hidden="true"></span><span class="t">Avançado</span></label>
+          </div>
+        </fieldset>
 
-            <button type="submit" id="btn-submit">💪 Gerar meu treino</button>
-        </form>
+        <label class="choice choice--check">
+          <input type="checkbox" id="temRestricao" name="temRestricao">
+          <span class="box" aria-hidden="true"></span>
+          <span class="t">Tenho lesão ou restrição médica</span>
+        </label>
+        <p class="nota-form">Se marcar, o plano automático não é gerado e você é orientado a procurar um profissional da academia.</p>
+
+        <button type="submit" id="btn-submit" class="btn btn-primary">Gerar meu treino</button>
+      </form>
+    </main>
+  </div>
+
+  <div id="loading-overlay" class="hidden" role="status" aria-live="polite">
+    <div class="loading-content">
+      <p class="loading-titulo">Montando seu treino</p>
+      <p class="loading-texto">Só um instante.</p>
+      <div class="traco" aria-hidden="true"></div>
     </div>
+  </div>
 
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="hidden">
-        <div class="loading-content">
-            <div class="loading-spinner"></div>
-            <h3>💪 Montando seu treino...</h3>
-            <p>Só um instante...</p>
-        </div>
-    </div>
-
-    <script src="js/config.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/anamnese.js"></script>
-    <script src="js/nav.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/anamnese.js"></script>
+  <script src="js/nav.js"></script>
 </body>
 </html>

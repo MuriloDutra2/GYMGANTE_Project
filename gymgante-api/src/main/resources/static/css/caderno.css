@@ -1,0 +1,448 @@
+/* ==========================================================================
+   CADERNO: sistema visual do GymGante
+   O treino é uma página de caderno quadriculado; cada série é uma caixa que se risca.
+   Fontes locais: Archivo (títulos), Atkinson Hyperlegible (texto), Kalam (anotações).
+   ========================================================================== */
+
+@font-face {
+  font-family: "Archivo";
+  src: url("../fonts/archivo-var.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: url("../fonts/atkinson-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: url("../fonts/atkinson-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Kalam";
+  src: url("../fonts/kalam-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  /* papel e tinta */
+  --paper: #f4f8fc;
+  --paper-2: #ebf1f8;
+  --grid: #d9e4ef;
+  --grid-strong: #c3d3e4;
+  --ink: #17284a;
+  --ink-2: #4a5b78;      /* texto secundário, 6:1 sobre o papel */
+  --red: #c8322a;        /* a caneta vermelha: riscos, ação principal, margem */
+  --red-ink: #a52620;    /* vermelho para texto pequeno sobre papel */
+  --red-wash: #f0e4e7;       /* o vermelho a 10% sobre o papel, em cor sólida */
+
+  /* tipografia */
+  --f-display: "Archivo", "Arial Narrow", sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+  --f-hand: "Kalam", "Segoe Print", cursive;
+
+  /* medidas */
+  --cell: 24px;
+  --margin: 64px;
+  --radius: 3px;
+  --line: 1.5px;
+  --gutter: 28px;
+
+  /* movimento */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+}
+
+body {
+  min-height: 100svh;
+  background-color: var(--paper);
+  /* quadriculado: linha fina a cada 24px, linha forte a cada 120px */
+  background-image:
+    linear-gradient(var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: calc(var(--cell) * 5) calc(var(--cell) * 5), calc(var(--cell) * 5) calc(var(--cell) * 5), var(--cell) var(--cell), var(--cell) var(--cell);
+  background-position: -1px -1px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--red);
+  color: #fff;
+}
+
+/* barra de rolagem na paleta */
+html {
+  scrollbar-color: var(--ink-2) var(--paper-2);
+}
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: var(--paper-2); }
+::-webkit-scrollbar-thumb { background: var(--ink-2); border: 3px solid var(--paper-2); border-radius: 8px; }
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1.5px; }
+.hidden { display: none !important; }
+
+/* ---------- foco ---------- */
+:focus-visible {
+  outline: 2.5px solid var(--red);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- tipografia ---------- */
+h1, h2, h3 {
+  font-family: var(--f-display);
+  font-stretch: 78%;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+  color: var(--ink);
+}
+h1 { font-size: clamp(2.6rem, 6.4vw, 5.25rem); }
+h2 { font-size: clamp(2rem, 4.4vw, 3.4rem); }
+h3 { font-size: clamp(1.35rem, 2.2vw, 1.75rem); line-height: 1.1; }
+
+p { max-width: 62ch; text-wrap: pretty; }
+h1, h2, h3, dd, dt, li { overflow-wrap: break-word; }
+.lede { font-size: clamp(1.125rem, 1.6vw, 1.3rem); color: var(--ink-2); max-width: 46ch; }
+.muted { color: var(--ink-2); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* anotação à mão: usada com parcimônia, sempre com função */
+.hand {
+  font-family: var(--f-hand);
+  font-size: 1.2rem;
+  line-height: 1.25;
+  color: var(--ink);
+  transform: rotate(-1.2deg);
+  transform-origin: left center;
+}
+.hand--red { color: var(--red-ink); }
+
+/* ---------- página (a folha e a margem) ---------- */
+.page {
+  position: relative;
+  min-height: 100svh;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-inline: calc(var(--margin) + var(--gutter)) var(--gutter);
+  /* a margem vermelha do caderno: um risco de 2px que acompanha a página inteira */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='8'%3E%3Crect width='2' height='8' fill='%23c8322a' fill-opacity='.5'/%3E%3C/svg%3E");
+  background-size: 2px 100%;
+  background-position: var(--margin) 0;
+  background-repeat: no-repeat;
+}
+
+/* ---------- cabeçalho ---------- */
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 72px;
+}
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-family: var(--f-display);
+  font-stretch: 80%;
+  font-weight: 800;
+  font-size: 1.55rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.marca { flex: none; }
+.marca svg { width: 34px; height: 34px; flex: none; color: var(--ink); }
+.topo nav { display: flex; align-items: center; gap: clamp(12px, 3vw, 32px); white-space: nowrap; }
+.topo nav a:not(.btn) {
+  position: relative;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.98rem;
+  padding: 10px 2px;
+}
+.topo nav a:not(.btn)::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 4px;
+  height: 2px;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms var(--ease-out);
+}
+.topo nav a:not(.btn)[aria-current="page"]::after { transform: scaleX(1); }
+@media (hover: hover) and (pointer: fine) {
+  .topo nav a:not(.btn):hover::after { transform: scaleX(1); }
+}
+
+/* ---------- botões ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 22px;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--radius);
+  font-family: var(--f-display);
+  font-stretch: 88%;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: 0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: transform 140ms var(--ease-out), background-color 140ms var(--ease-out), color 140ms var(--ease-out);
+}
+.btn svg { width: 20px; height: 20px; flex: none; }
+.btn:active { transform: scale(0.97); }
+.btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+/* a caneta vermelha: a ação principal da tela */
+.btn-primary { background: var(--red); color: #fff; }
+.btn-primary:active { background: var(--ink); }
+
+/* contorno de tinta: ação secundária */
+.btn--ghost { background: transparent; color: var(--ink); min-height: 42px; padding: 8px 16px; font-size: 1rem; }
+.btn--ghost:active { background: var(--ink); color: var(--paper); }
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover { background: var(--ink); }
+  .btn--ghost:hover { background: var(--ink); color: var(--paper); }
+}
+
+/* ---------- caixa de série (riscar) ---------- */
+.box {
+  --s: 28px;
+  position: relative;
+  flex: none;
+  width: var(--s);
+  height: var(--s);
+  border: var(--line) solid var(--ink);
+  border-radius: 2px;
+  background: var(--paper);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 120ms var(--ease-out), background-color 120ms var(--ease-out);
+}
+.box::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  background: no-repeat center / 100% 100% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Cpath d='M5 15 C8 17.5 10 20 11.8 22 C15 14 19 9 24 4' fill='none' stroke='%23c8322a' stroke-width='3.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 90ms var(--ease-out);
+}
+.box[aria-pressed="true"]::after,
+input:checked + .box::after { clip-path: inset(0 0 0 0); transition-duration: 200ms; }
+.box:active { transform: scale(0.92); }
+/* área de toque de 44px, sem mudar o desenho da caixa */
+button.box::before { content: ""; position: absolute; inset: -9px; }
+.box--lg { --s: 36px; }
+
+/* ---------- escolha em linha (rádio como caixa) ---------- */
+.choices { display: flex; flex-wrap: wrap; gap: 6px 20px; }
+.choice {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 700;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.choice .box { cursor: inherit; }
+.choice input:focus-visible + .box { outline: 2.5px solid var(--red); outline-offset: 3px; }
+.choice:active .box { transform: scale(0.92); }
+.choice span.t {
+  background: linear-gradient(var(--red-wash), var(--red-wash)) left 85% / 0 0.42em no-repeat;
+  transition: background-size 240ms var(--ease-out);
+}
+.choice input:checked ~ span.t { background-size: 100% 0.42em; }
+
+/* ---------- perguntas numeradas, escritas à mão (landing e anamnese) ---------- */
+.ask { border: 0; display: grid; gap: 6px; }
+.ask legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--f-hand);
+  font-weight: 400;
+  font-size: 1.4rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+  margin-bottom: 4px;
+  float: left;      /* mantém legend e opções na mesma grade, sem o corte da borda */
+  width: 100%;
+}
+.ask .choices { clear: both; padding-left: 44px; }
+.ask-n {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: var(--line) solid var(--ink);
+  border-radius: 50%;
+  font-family: var(--f-hand);
+  font-weight: 400;
+  font-size: 1.15rem;
+  line-height: 1;
+  background: var(--paper);
+}
+
+/* ---------- formulários ---------- */
+.field { display: grid; gap: 4px; }
+.field label, .field .lbl {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+.field .hint { font-size: 0.9rem; color: var(--ink-2); }
+.input, .field input, .field select {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem; /* nunca abaixo de 16px: evita o zoom do iOS */
+}
+.field input::placeholder { color: var(--ink-2); opacity: 0.85; }
+.field input:focus, .field select:focus { outline: 2.5px solid var(--red); outline-offset: 2px; }
+.field input:user-invalid { border-color: var(--red); background: var(--red-wash); }
+.field select {
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9 L12 15 L18 9' fill='none' stroke='%2317284a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 22px;
+}
+
+/* ---------- folha de papel (um bloco que se destaca da página) ---------- */
+.folha {
+  position: relative;
+  background: var(--paper);
+  border: var(--line) solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 0 rgba(23, 40, 74, 0.18), 0 18px 28px -18px rgba(23, 40, 74, 0.4);
+}
+
+/* ---------- a semana (landing e painel) ---------- */
+.semana-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  margin-top: 12px;
+  border: var(--line) solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+.dia-col {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 8px;
+  padding: 14px 12px 18px;
+  min-height: 150px;
+}
+.dia-col + .dia-col { border-left: 1px solid var(--grid-strong); }
+.dia-col .sigla { font-family: var(--f-display); font-stretch: 80%; font-weight: 800; font-size: 1.3rem; }
+.dia-col .nome { font-weight: 700; font-size: 0.95rem; line-height: 1.2; }
+.dia-col .grupo { font-size: 0.85rem; color: var(--ink-2); line-height: 1.25; }
+.dia-col .box { margin-top: auto; }
+.dia-col--folga { color: var(--ink-2); }
+.dia-col--folga .nome { font-weight: 400; }
+.dia-col--folga svg { width: 24px; height: 24px; margin-top: auto; }
+.dia-col--hoje { background: var(--red-wash); }
+
+/* ---------- rodapé ---------- */
+.rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-block: 32px 40px;
+  border-top: var(--line) solid var(--ink);
+  font-size: 0.95rem;
+  color: var(--ink-2);
+}
+.rodape .marca { font-size: 1.2rem; }
+.rodape .marca svg { width: 26px; height: 26px; }
+
+/* ---------- celular ---------- */
+@media (max-width: 720px) {
+  :root { --margin: 18px; --gutter: 16px; }
+  .page { padding-inline: calc(var(--margin) + 18px) var(--gutter); }
+  .topo { height: 64px; }
+  .topo nav .hide-sm { display: none; }
+  html { scroll-padding-top: 76px; }
+  .semana-grid { grid-template-columns: minmax(0, 1fr); }
+  .dia-col { grid-template-columns: 3.2rem minmax(0, 1fr) auto; align-items: center; min-height: 0; padding: 12px 14px; gap: 4px 10px; }
+  .dia-col + .dia-col { border-left: 0; border-top: 1px solid var(--grid-strong); }
+  .dia-col .sigla { grid-row: 1 / span 2; }
+  .dia-col .box, .dia-col--folga svg { margin-top: 0; grid-column: 3; grid-row: 1 / span 2; }
+}
+
+/* entrada escalonada (uma vez, na primeira dobra): sobe 10px e aparece */
+@keyframes entra {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal { animation: entra 480ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 70ms); }
+
+/* ---------- movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

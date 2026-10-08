@@ -1,54 +1,72 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seu Treino - GymGante</title>
-    <link rel="stylesheet" href="css/treino.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f8fc">
+  <title>Plano completo - GymGante</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/caderno.css">
+  <link rel="stylesheet" href="css/telas.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/plano.css">
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <a href="dashboard.html" class="back-btn">← Voltar ao painel</a>
-            <h1>💪 Seu Treino Personalizado</h1>
-            <div><button id="btn-novo-treino" class="btn-secondary">🔄 Gerar Novo Treino</button> <button id="link-sair" class="btn-secondary">Sair</button></div>
-        </div>
-        <div class="user-info">
-            <p><strong>Nome:</strong> <span id="user-nome">-</span></p>
-            <p><strong>Objetivo:</strong> <span id="user-objetivo">-</span></p>
-            <p><strong>Frequência:</strong> <span id="user-dias">-</span></p>
-            <p><strong>Nível:</strong> <span id="user-nivel">-</span></p>
-        </div>
+  <div class="page">
+    <header class="topo">
+      <a class="marca" href="dashboard.html" aria-label="GymGante, painel">
+        <svg aria-hidden="true"><use href="img/sprite.svg#logo-mark"></use></svg>
+        GymGante
+      </a>
+      <nav aria-label="Principal">
+        <a href="dashboard.html">Painel</a>
+        <a href="treino.html" aria-current="page">Plano<span class="hide-sm"> completo</span></a>
+        <a href="#" id="link-sair">Sair</a>
+      </nav>
     </header>
 
-    <div class="loading-overlay" id="loading">
-        <div class="loading-content">
-            <div class="loading-spinner"></div>
-            <h3>🏋️ Carregando treino...</h3>
-            <p>Aguarde enquanto preparamos seu treino personalizado.</p>
+    <main class="painel plano">
+      <section class="saudacao">
+        <h1>Seu plano completo</h1>
+        <div class="plano-acoes">
+          <button id="btn-novo-treino" class="btn btn--ghost" type="button">Gerar novo treino</button>
         </div>
-    </div>
+      </section>
 
-    <main id="treino-container">
-        <!-- Treino será renderizado aqui -->
+      <dl class="resumo-linha">
+        <div><dt>Nome</dt><dd id="user-nome">-</dd></div>
+        <div><dt>Objetivo</dt><dd id="user-objetivo">-</dd></div>
+        <div><dt>Frequência</dt><dd id="user-dias">-</dd></div>
+        <div><dt>Nível</dt><dd id="user-nivel">-</dd></div>
+      </dl>
+
+      <div id="loading" class="painel-carregando" role="status" aria-live="polite">
+        <div class="traco" aria-hidden="true"></div>
+        <p>Abrindo o seu plano</p>
+      </div>
+
+      <div id="treino-container"></div>
     </main>
+  </div>
 
-    <!-- Modal de Confirmação -->
-    <div id="modal-confirm" class="modal hidden">
-        <div class="modal-content">
-            <h3>⚠️ Tem certeza?</h3>
-            <p>Ao gerar um novo treino, o treino atual será substituído. Esta ação não pode ser desfeita.</p>
-            <div class="modal-actions">
-                <button id="btn-cancel" class="btn-secondary">Cancelar</button>
-                <button id="btn-confirm" class="btn-primary">Sim, Gerar Novo Treino</button>
-            </div>
-        </div>
+  <!-- Confirmação: o novo treino substitui o atual -->
+  <div id="modal-confirm" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-content folha">
+      <h2 id="modal-titulo">Gerar um novo treino?</h2>
+      <p>O treino atual será substituído. Esta ação não pode ser desfeita.</p>
+      <div class="modal-actions">
+        <button id="btn-cancel" class="btn btn--ghost" type="button">Cancelar</button>
+        <button id="btn-confirm" class="btn btn-primary" type="button">Gerar novo treino</button>
+      </div>
     </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/treino.js"></script>
-    <script src="js/nav.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/muscle.js"></script>
+  <script src="js/treino.js"></script>
+  <script src="js/nav.js"></script>
 </body>
 </html>

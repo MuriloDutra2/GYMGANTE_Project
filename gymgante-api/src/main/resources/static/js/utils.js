@@ -1,69 +1,53 @@
 // Utilitários gerais
 
 /**
- * Mostra uma notificação toast (substitui alert)
+ * Mostra uma notificação (substitui alert). Tipos: success, error, warning, info.
  */
 function showToast(message, type = 'info', duration = 3000) {
-    // Remove toast anterior se existir
-    const existingToast = document.getElementById('toast-container');
-    if (existingToast) {
-        existingToast.remove();
-    }
+    const existente = document.getElementById('toast-container');
+    if (existente) existente.remove();
 
-    // Cria container do toast
+    const cores = {
+        success: ['#17284a', '#f4f8fc'],
+        error:   ['#c8322a', '#ffffff'],
+        warning: ['#f4f8fc', '#17284a'],
+        info:    ['#17284a', '#f4f8fc']
+    };
+    const [fundo, texto] = cores[type] || cores.info;
+
     const toast = document.createElement('div');
     toast.id = 'toast-container';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
     toast.style.cssText = `
         position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#8B5CF6'};
-        color: white;
-        padding: 16px 24px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        z-index: 10000;
-        animation: slideIn 0.3s ease-out;
-        max-width: 400px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        top: max(16px, env(safe-area-inset-top));
+        right: 16px;
+        left: 16px;
+        margin-left: auto;
+        max-width: 26rem;
+        background: ${fundo};
+        color: ${texto};
+        border: 1.5px solid #17284a;
+        border-radius: 3px;
+        padding: 14px 18px;
+        box-shadow: 0 12px 24px -12px rgba(23, 40, 74, 0.5);
+        z-index: 200;
+        font-family: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+        font-weight: 700;
+        line-height: 1.4;
+        transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1), opacity 220ms cubic-bezier(0.23, 1, 0.32, 1);
+        transform: translateY(-8px);
+        opacity: 0;
     `;
     toast.textContent = message;
-
-    // Adiciona animação
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-    `;
-    if (!document.getElementById('toast-animations')) {
-        style.id = 'toast-animations';
-        document.head.appendChild(style);
-    }
-
     document.body.appendChild(toast);
+    requestAnimationFrame(() => { toast.style.transform = 'none'; toast.style.opacity = '1'; });
 
-    // Remove após duração
     setTimeout(() => {
-        toast.style.animation = 'slideOut 0.3s ease-out';
-        setTimeout(() => toast.remove(), 300);
+        toast.style.transform = 'translateY(-8px)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 240);
     }, duration);
 }
 
@@ -111,40 +95,22 @@ function isValidPassword(password) {
 }
 
 /**
- * Mostra loading overlay
+ * Mostra o carregamento (um risco vermelho que se escreve)
  */
 function showLoading(message = 'Carregando...') {
-    const existing = document.getElementById('loading-overlay-global');
-    if (existing) return;
+    if (document.getElementById('loading-overlay-global')) return;
 
     const overlay = document.createElement('div');
     overlay.id = 'loading-overlay-global';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(26, 13, 46, 0.95);
-        backdrop-filter: blur(10px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        flex-direction: column;
-        gap: 20px;
-    `;
+    overlay.className = 'carregando-overlay';
+    overlay.setAttribute('role', 'status');
+    overlay.setAttribute('aria-live', 'polite');
     overlay.innerHTML = `
-        <div style="
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(139, 92, 246, 0.3);
-            border-top: 4px solid #8B5CF6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        "></div>
-        <h3 style="color: #E0E0E0; font-size: 1.2em; margin: 0;">${message}</h3>
-    `;
+        <div class="loading-content">
+            <p class="loading-titulo"></p>
+            <div class="traco" aria-hidden="true"></div>
+        </div>`;
+    overlay.querySelector('.loading-titulo').textContent = message;
     document.body.appendChild(overlay);
 }
 

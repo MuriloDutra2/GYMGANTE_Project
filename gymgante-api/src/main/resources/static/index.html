@@ -2,292 +2,129 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gym Gante</title>
- 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
- 
-  <style>
-    /* ---------- RESET ---------- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-    }
- 
-    body {
-      background-color: #000;
-      color: #fff;
-      overflow-x: hidden;
-    }
- 
-    /* ---------- NAV ---------- */
-    header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      padding: 20px 50px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
-      box-shadow: 0 2px 10px rgba(160, 32, 240, 0.2);
-    }
- 
-    .logo img {
-      height: 110px;
-      width: auto;
-      display: block;
-      filter: drop-shadow(0 0 6px rgba(160, 32, 240, 0.4));
-      transition: transform 0.3s ease;
-    }
- 
-    .logo img:hover {
-      transform: scale(1.05);
-    }
- 
-    nav a {
-      margin: 0 15px;
-      color: #fff;
-      text-decoration: none;
-      transition: color 0.3s;
-      font-weight: 500;
-    }
- 
-    nav a:hover {
-      color: #a020f0;
-    }
- 
-    .btn {
-      background: linear-gradient(90deg, #a020f0, #6f00ff);
-      color: #fff;
-      padding: 10px 25px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px rgba(160, 32, 240, 0.4);
-    }
- 
-    .btn:hover {
-      background: linear-gradient(90deg, #6f00ff, #a020f0);
-      box-shadow: 0 0 20px rgba(160, 32, 240, 0.7);
-      transform: scale(1.05);
-    }
- 
-    /* ---------- HERO SECTION ---------- */
-    .hero {
-      height: 100vh;
-      background:
-        linear-gradient(135deg, rgba(0, 0, 0, 0.8) 40%, rgba(160, 32, 240, 0.3)),
-        url("sua-imagem.jpg") center/cover no-repeat;
-      background-attachment: fixed;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 0 20px;
-    }
- 
-    .hero-content {
-      max-width: 800px;
-      animation: fadeInUp 1.5s ease;
-    }
- 
-    .hero-content p {
-      font-size: 1.1rem;
-      letter-spacing: 2px;
-      color: #d0a6ff;
-    }
- 
-    .hero-content h1 {
-      font-size: 3.2rem;
-      line-height: 1.2;
-      margin: 20px 0;
-      background: linear-gradient(90deg, #ffffff, #b879ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
- 
-    section {
-      padding: 100px 10%;
-      background-color: #0a0a0a;
-      text-align: center;
-    }
- 
-    section h2 {
-      color: #a020f0;
-      font-size: 2rem;
-      margin-bottom: 20px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
- 
-    section p {
-      color: #ccc;
-      font-size: 1.1rem;
-      line-height: 1.6;
-      max-width: 700px;
-      margin: 0 auto;
-    }
- 
-    /* PLANOS */
-    .planos-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-      margin-top: 50px;
-    }
- 
-    .plano-card {
-      background: #151515;
-      border: 1px solid #6a00ff33;
-      border-radius: 20px;
-      padding: 40px 25px;
-      box-shadow: 0 0 15px #000;
-      transition: 0.3s;
-    }
- 
-    .plano-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 20px rgba(160, 32, 240, 0.4);
-    }
- 
-    .plano-destaque {
-      background: #1b012a;
-      border: 2px solid #6a00ff;
-      transform: scale(1.05);
-      position: relative;
-    }
- 
-    .plano-destaque span {
-      position: absolute;
-      top: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #6a00ff;
-      padding: 5px 15px;
-      border-radius: 15px;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
- 
-    .plano-card h3 {
-      font-size: 1.7rem;
-      margin-bottom: 10px;
-    }
- 
-    .plano-card p {
-      margin-bottom: 20px;
-      color: #ccc;
-    }
- 
-    .plano-card .preco {
-      font-size: 2.5rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
- 
-    .plano-card button {
-      background: #6a00ff;
-      border: none;
-      padding: 12px 20px;
-      color: #fff;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 20px;
-      transition: 0.3s;
-    }
- 
-    .plano-card button:hover {
-      background: #5200c7;
-    }
- 
-    @keyframes fadeInUp {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f8fc">
+  <meta name="description" content="Responda três perguntas e receba um plano de treino pronto, dividido em dias, para marcar exercício por exercício.">
+  <title>GymGante - seu treino de hoje, escrito em segundos</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/caderno.css">
+  <link rel="stylesheet" href="css/landing.css">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
- 
-  <header>
-    <div class="logo">
-        <img src="img/logo.png" alt="Logo Gym Gante">        
-    </div>
-    <nav>
-      <a href="#sobre">Sobre</a>
-      <a href="#planos">Planos</a>
-      <a href="#vantagens">Vantagens</a>
-    </nav>
-    <a href="login.html" class="btn">Login</a>
-  </header>
- 
-  <section class="hero">
-    <div class="hero-content">
-      <p>BEM-VINDO(A) À</p>
-      <h1>GYM GANTE<br>Alta Performance</h1>
-      <p>Uma experiência exclusiva com equipamentos de ponta e ambiente inspirador.</p>
-      <br>
-      <a href="cadastro.html" class="btn">MATRICULE-SE</a>
-    </div>
-  </section>
- 
-  <section id="sobre">
-    <h2>Sobre a Gym Gante</h2>
-    <p>Na Gym Gante, você treina no padrão das maiores academias de elite. Estrutura de última geração,
-    clima motivador e acompanhamento especializado transformam seu treino em uma experiência exclusiva.</p>
-  </section>
- 
-  <section id="planos">
-    <h2>Planos</h2>
-    <p>Escolha o plano ideal para você</p>
- 
-    <div class="planos-container">
-      <div class="plano-card">
-        <h3>Mensal</h3>
-        <p>Pagamento mês a mês.</p>
-        <p class="preco">R$ 120/mês</p>
-        <button onclick="window.location.href='cadastro.html'">Assinar Mensal</button>
-      </div>
- 
-      <div class="plano-card">
-        <h3>Semestral</h3>
-        <p>Economize pagando 6 meses.</p>
-        <p class="preco">R$ 115/mês</p>
-        <p>Total: R$ 690</p>
-        <button onclick="window.location.href='cadastro.html'">Assinar Semestral</button>
-      </div>
- 
-      <div class="plano-card plano-destaque">
-        <span>Mais vantajoso</span>
-        <h3>Anual</h3>
-        <p>Nosso melhor custo-benefício.</p>
-        <p class="preco">R$ 110/mês</p>
-        <p>Total: R$ 1320</p>
-        <button onclick="window.location.href='cadastro.html'">Assinar Anual</button>
-      </div>
-    </div>
-    <br>
- 
-    <h2>Vantagens</h2>
-    <p>
-      Treinar na Gym Gante significa ter acesso ao que há de melhor:  
-      equipamentos de elite, área de musculação completa, ambiente limpo e organizado,  
-      programas exclusivos de alta performance, professores qualificados e suporte total  
-      para você alcançar seus resultados mais rápido e com segurança.
-    </p>
-  </section>
- 
+  <div class="page">
+    <header class="topo">
+      <a class="marca" href="index.html" aria-label="GymGante, página inicial">
+        <svg aria-hidden="true"><use href="img/sprite.svg#logo-mark"></use></svg>
+        GymGante
+      </a>
+      <nav aria-label="Principal">
+        <a class="hide-sm" href="#como">Como funciona</a>
+        <a class="hide-sm" href="#seguranca">Segurança</a>
+        <a class="btn btn--ghost" href="login.html">Entrar</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Primeira dobra: o seletor de verdade e uma página de exemplo que se reescreve -->
+      <section class="hero" id="inicio" aria-labelledby="titulo">
+        <div class="hero-texto">
+          <h1 id="titulo" class="reveal" style="--i:0">Seu treino de hoje, escrito em segundos.</h1>
+          <p class="lede reveal" style="--i:1">Responda três perguntas e receba um plano pronto para seguir, dia após dia.</p>
+
+          <form id="form-inicio" class="perguntas reveal" style="--i:2" novalidate>
+            <fieldset class="ask">
+              <legend><span class="ask-n" aria-hidden="true">1</span>Qual é o seu objetivo?</legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="objetivo" value="Hipertrofia" checked><span class="box" aria-hidden="true"></span><span class="t">Hipertrofia</span></label>
+                <label class="choice"><input type="radio" name="objetivo" value="Definição Muscular"><span class="box" aria-hidden="true"></span><span class="t">Definição</span></label>
+                <label class="choice"><input type="radio" name="objetivo" value="Perda de Gordura"><span class="box" aria-hidden="true"></span><span class="t">Perda de gordura</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="ask">
+              <legend><span class="ask-n" aria-hidden="true">2</span>Quantos dias por semana?</legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="dias" value="3x por semana"><span class="box" aria-hidden="true"></span><span class="t">3 dias</span></label>
+                <label class="choice"><input type="radio" name="dias" value="4x por semana" checked><span class="box" aria-hidden="true"></span><span class="t">4 dias</span></label>
+                <label class="choice"><input type="radio" name="dias" value="5x por semana"><span class="box" aria-hidden="true"></span><span class="t">5 dias</span></label>
+                <label class="choice"><input type="radio" name="dias" value="6x por semana"><span class="box" aria-hidden="true"></span><span class="t">6 dias</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="ask">
+              <legend><span class="ask-n" aria-hidden="true">3</span>Qual é o seu nível?</legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="nivel" value="Iniciante"><span class="box" aria-hidden="true"></span><span class="t">Iniciante</span></label>
+                <label class="choice"><input type="radio" name="nivel" value="Intermediário" checked><span class="box" aria-hidden="true"></span><span class="t">Intermediário</span></label>
+                <label class="choice"><input type="radio" name="nivel" value="Avançado"><span class="box" aria-hidden="true"></span><span class="t">Avançado</span></label>
+              </div>
+            </fieldset>
+
+            <div class="acao">
+              <button class="btn btn-primary" type="submit">Gerar meu treino <svg aria-hidden="true"><use href="img/sprite.svg#i-arrow"></use></svg></button>
+            </div>
+          </form>
+        </div>
+
+        <article class="folha logpage reveal" style="--i:3" id="folha" aria-labelledby="lp-titulo" aria-live="polite">
+          <header class="lp-cab">
+            <h2 id="lp-titulo" class="lp-titulo">Treino A: <span id="lp-grupo"></span></h2>
+            <p class="hand" id="lp-meta"></p>
+          </header>
+          <ol class="lp-lista" id="lp-lista"></ol>
+          <p class="lp-nota">Exemplo ilustrativo. No seu plano, os exercícios são sorteados na hora.</p>
+        </article>
+      </section>
+
+      <!-- Como funciona: sequência de verdade, então a numeração carrega informação -->
+      <section class="como" id="como" aria-labelledby="t-como" data-reveal>
+        <div class="como-lado">
+          <h2 id="t-como">Do papel ao treino do dia</h2>
+          <p class="hand hand--red">risque cada exercício ao terminar</p>
+        </div>
+        <ol class="passos">
+          <li>
+            <span class="box box--lg" aria-pressed="true" role="img" aria-label="feito"></span>
+            <div><h3>Responda</h3><p>Objetivo, frequência e nível. São as únicas três informações que o plano usa.</p></div>
+          </li>
+          <li>
+            <span class="box box--lg" aria-pressed="true" role="img" aria-label="feito"></span>
+            <div><h3>Receba</h3><p>O plano sai na hora, dividido em dias, com séries, repetições e descanso de cada exercício.</p></div>
+          </li>
+          <li>
+            <span class="box box--lg" aria-pressed="true" role="img" aria-label="feito"></span>
+            <div><h3>Marque</h3><p>No painel aparece o treino do dia da semana. Toque em cada exercício para riscar e acompanhe a sequência.</p></div>
+          </li>
+          <li>
+            <span class="box box--lg" aria-pressed="false" role="img" aria-label="a fazer"></span>
+            <div><h3>Troque</h3><p>Quer variar? &ldquo;Novo treino&rdquo; sorteia outros exercícios com as mesmas respostas.</p></div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- A semana: tábua de colunas, responde ao que foi escolhido acima -->
+      <section class="semana" id="semana" aria-labelledby="t-semana" data-reveal>
+        <h2 id="t-semana">A sua semana, no caderno</h2>
+        <p class="lede" id="semana-texto"></p>
+        <ol class="semana-grid" id="semana-grid"></ol>
+        <p class="hand" id="semana-resumo" aria-live="polite"></p>
+      </section>
+
+      <!-- Segurança -->
+      <section class="seguranca" id="seguranca" aria-labelledby="t-seg" data-reveal>
+        <h2 id="t-seg">Tem lesão? <mark>O plano automático não é para você.</mark></h2>
+        <p>Se você marcar que tem lesão ou restrição médica, o GymGante guarda suas respostas, não monta o treino sozinho e orienta a procurar um profissional da academia.</p>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <span class="marca"><svg aria-hidden="true"><use href="img/sprite.svg#logo-mark"></use></svg>GymGante</span>
+      <span>Projeto acadêmico. Os treinos sugeridos não substituem a orientação de um profissional.</span>
+    </footer>
+  </div>
+
+  <script src="js/landing.js"></script>
 </body>
 </html>

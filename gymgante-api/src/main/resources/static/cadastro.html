@@ -1,62 +1,83 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - GymGante</title>
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/forms.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f8fc">
+  <title>Criar conta - GymGante</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/caderno.css">
+  <link rel="stylesheet" href="css/telas.css">
 </head>
 <body>
+  <div class="page">
+    <header class="topo">
+      <a class="marca" href="index.html" aria-label="GymGante, página inicial">
+        <svg aria-hidden="true"><use href="img/sprite.svg#logo-mark"></use></svg>
+        GymGante
+      </a>
+      <nav aria-label="Principal">
+        <a class="btn btn--ghost" href="login.html">Entrar</a>
+      </nav>
+    </header>
 
-    <main>
-        <h1>Crie sua Conta GymGante</h1>
+    <main class="tela">
+      <div class="tela-texto">
+        <h1 class="reveal" style="--i:0">Abra o seu caderno.</h1>
+        <p class="lede reveal" style="--i:1">Crie a conta para guardar o plano e o progresso de cada treino.</p>
+        <p class="hand hand--red reveal hidden" style="--i:2" id="respostas-guardadas"></p>
+      </div>
 
-        <form id="form-cadastro">
-            
-            <div>
-                <label for="nome">Nome Completo:</label>
-                <input type="text" id="nome" name="nome_completo" required>
-            </div>
-
-            <div>
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            
-            <div>
-                <label for="senha">Senha:</label>
-                <input type="password" id="senha" name="senha" required>
-            </div>
-
-            <div>
-                <label for="cpf">CPF:</label>
-                <input type="text" id="cpf" name="cpf" required>
-            </div>
-
-            <div>
-                <label for="nascimento">Data de Nascimento:</label>
-                <input type="date" id="nascimento" name="data_nascimento" required>
-            </div>
-
-            <div>
-                <label for="telefone">Telefone:</label>
-                <input type="tel" id="telefone" name="telefone" required>
-            </div>
-
-            <button type="submit">Cadastrar</button>
-
-        </form>
-
-        <p class="login-link">
-    Já tem uma conta? <a href="login.html">Faça login aqui</a>.
-            </p>
+      <form id="form-cadastro" class="folha form-folha reveal" style="--i:2">
+        <div class="field">
+          <label for="nome">Nome completo</label>
+          <input type="text" id="nome" name="nome_completo" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" autocapitalize="none" autocorrect="off" required>
+        </div>
+        <div class="field">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha" autocomplete="new-password" minlength="8" required>
+          <span class="hint">No mínimo 8 caracteres.</span>
+        </div>
+        <div class="linha-dupla">
+          <div class="field">
+            <label for="cpf">CPF</label>
+            <input type="text" id="cpf" name="cpf" inputmode="numeric" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="nascimento">Data de nascimento</label>
+            <input type="date" id="nascimento" name="data_nascimento" autocomplete="bday" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="telefone">Telefone</label>
+          <input type="tel" id="telefone" name="telefone" autocomplete="tel" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Criar conta</button>
+        <p class="troca">Já tem conta? <a href="login.html">Entrar</a></p>
+      </form>
     </main>
+  </div>
 
-    <script src="js/config.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/cadastro.js"></script>
-
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/cadastro.js"></script>
+  <script>
+    // Respostas escolhidas na página inicial: avisa que já estão guardadas
+    (function () {
+      try {
+        var pre = JSON.parse(localStorage.getItem('gymgante:pre') || 'null');
+        if (!pre) return;
+        var el = document.getElementById('respostas-guardadas');
+        el.textContent = 'Suas respostas já estão guardadas: ' + pre.objetivoPrincipal.toLowerCase() + ', ' +
+          String(pre.diasPorSemana).replace(' por semana', ' dias').replace('x dias', ' dias').toLowerCase() + ', ' + pre.nivel.toLowerCase() + '.';
+        el.classList.remove('hidden');
+      } catch (_) { /* sem respostas guardadas: segue normal */ }
+    })();
+  </script>
 </body>
 </html>

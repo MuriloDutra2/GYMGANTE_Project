@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-08T00:00:00Z",
+  "title": "Design System: GymGante",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Graph Paper", "canonical": "#f4f8fc", "tonalRamp": ["#17284a", "#3a4b6c", "#5d6e8c", "#8697b1", "#aebdd2", "#d9e4ef", "#ebf1f8", "#f4f8fc"] },
+      "paper-2": { "role": "neutral", "displayName": "Paper Shade", "canonical": "#ebf1f8", "tonalRamp": ["#17284a", "#3a4b6c", "#5d6e8c", "#8697b1", "#aebdd2", "#c3d3e4", "#d9e4ef", "#ebf1f8"] },
+      "grid": { "role": "neutral", "displayName": "Minor Grid Line", "canonical": "#d9e4ef", "tonalRamp": ["#17284a", "#3a4b6c", "#5d6e8c", "#8697b1", "#aebdd2", "#c3d3e4", "#d9e4ef", "#ebf1f8"] },
+      "grid-strong": { "role": "neutral", "displayName": "Major Grid Line", "canonical": "#c3d3e4", "tonalRamp": ["#17284a", "#3a4b6c", "#5d6e8c", "#8697b1", "#a3b6cc", "#c3d3e4", "#d9e4ef", "#ebf1f8"] },
+      "ink": { "role": "neutral", "displayName": "Navy Ink", "canonical": "#17284a", "tonalRamp": ["#0b1426", "#17284a", "#2c3e60", "#4a5b78", "#6c7c97", "#98a6bb", "#c4cddb", "#e6ebf2"] },
+      "ink-2": { "role": "neutral", "displayName": "Faded Ink", "canonical": "#4a5b78", "tonalRamp": ["#17284a", "#2c3e60", "#4a5b78", "#6c7c97", "#8e9bb2", "#b0bacb", "#d2d8e3", "#ebeef3"] },
+      "red-pen": { "role": "primary", "displayName": "Red Pen", "canonical": "#c8322a", "tonalRamp": ["#5c1511", "#7e1d18", "#a52620", "#c8322a", "#dc5f58", "#e88c87", "#f2bab6", "#f8e0de"] },
+      "red-ink": { "role": "primary", "displayName": "Red Ink (small text)", "canonical": "#a52620", "tonalRamp": ["#4a110e", "#6d1a16", "#8a201b", "#a52620", "#c8322a", "#dc5f58", "#e88c87", "#f2bab6"] },
+      "red-wash": { "role": "neutral", "displayName": "Red Wash (solid 10% red on paper)", "canonical": "#f0e4e7", "tonalRamp": ["#a52620", "#c8322a", "#dc5f58", "#e8a5a6", "#ecc5c8", "#f0e4e7", "#f4eef2", "#f4f8fc"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "h1 only. Archivo 800 at width 78%." },
+      "headline": { "displayName": "Headline", "purpose": "h2 section and panel headings." },
+      "title": { "displayName": "Title", "purpose": "h3, day headings, button labels (width 88%)." },
+      "body": { "displayName": "Body", "purpose": "Reading text, Atkinson Hyperlegible, 62ch max." },
+      "label": { "displayName": "Label", "purpose": "Field labels, options, exercise names, nav links (bold)." },
+      "annotation": { "displayName": "Annotation", "purpose": "Kalam handwriting: numbered question legends and short notes only." }
+    },
+    "shadows": [
+      { "name": "sheet", "value": "0 1px 0 rgba(23,40,74,0.18), 0 18px 28px -18px rgba(23,40,74,0.4)", "purpose": "A loose sheet of paper: landing sample page, dashboard today page, forms and modal sheets (.folha). Nothing else." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Default easing for all feedback and entrances." },
+      { "name": "ease-in-out", "value": "cubic-bezier(0.77, 0, 0.175, 1)", "purpose": "Loading pen stroke only." },
+      { "name": "entrance-stagger", "value": "480ms, 70ms per item, translateY(10px)", "purpose": "The single first-fold entrance on the landing." },
+      { "name": "tick-draw", "value": "clip-path inset, 90ms in / 200ms draw", "purpose": "Red check drawn left to right when a set box is ticked." },
+      { "name": "press", "value": "scale(0.97) buttons, scale(0.92) boxes", "purpose": "Touch and click feedback." }
+    ],
+    "breakpoints": [
+      { "name": "tablet", "value": "960px" },
+      { "name": "auth", "value": "860px" },
+      { "name": "phone", "value": "720px" },
+      { "name": "narrow-form", "value": "520px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The red pen: the one main action on a screen.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Gerar meu treino</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border:1.5px solid #17284a;border-radius:3px;font-family:Archivo,'Arial Narrow',sans-serif;font-stretch:88%;font-weight:800;font-size:1.15rem;cursor:pointer;transition:transform 140ms cubic-bezier(0.23,1,0.32,1),background-color 140ms cubic-bezier(0.23,1,0.32,1)}.ds-btn-primary{background:#c8322a;color:#fff}.ds-btn-primary:hover{background:#17284a}.ds-btn-primary:active{background:#17284a;transform:scale(0.97)}.ds-btn:focus-visible{outline:2.5px solid #c8322a;outline-offset:3px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Ink outline secondary action.",
+      "html": "<button class=\"ds-btn-ghost\">Ver plano</button>",
+      "css": ".ds-btn-ghost{min-height:42px;padding:8px 16px;border:1.5px solid #17284a;border-radius:3px;background:transparent;color:#17284a;font-family:Archivo,'Arial Narrow',sans-serif;font-stretch:88%;font-weight:800;font-size:1rem;cursor:pointer;transition:transform 140ms cubic-bezier(0.23,1,0.32,1),background-color 140ms,color 140ms}.ds-btn-ghost:hover,.ds-btn-ghost:active{background:#17284a;color:#f4f8fc}.ds-btn-ghost:active{transform:scale(0.97)}.ds-btn-ghost:focus-visible{outline:2.5px solid #c8322a;outline-offset:3px}"
+    },
+    {
+      "name": "Set Box",
+      "kind": "custom",
+      "refersTo": "set-box",
+      "description": "Signature control: a 1.5px ink box that a red pen check is drawn into.",
+      "html": "<span class=\"ds-box\"></span> <span class=\"ds-box ds-box-on\"></span>",
+      "css": ".ds-box{position:relative;display:inline-block;width:28px;height:28px;margin-right:8px;border:1.5px solid #17284a;border-radius:2px;background:#f4f8fc}.ds-box::after{content:'';position:absolute;inset:-3px;background:no-repeat center/100% 100% url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Cpath d='M5 15 C8 17.5 10 20 11.8 22 C15 14 19 9 24 4' fill='none' stroke='%23c8322a' stroke-width='3.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\");clip-path:inset(0 100% 0 0);transition:clip-path 90ms cubic-bezier(0.23,1,0.32,1)}.ds-box-on::after{clip-path:inset(0 0 0 0)}"
+    },
+    {
+      "name": "Numbered Question",
+      "kind": "custom",
+      "refersTo": "set-box",
+      "description": "Kalam legend with circled numeral and tick-box options; shared by landing and questionnaire.",
+      "html": "<fieldset class=\"ds-ask\"><legend><span class=\"ds-n\">1</span>Qual o seu objetivo?</legend><div class=\"ds-choices\"><label class=\"ds-choice\"><span class=\"ds-cbox ds-cbox-on\"></span><span class=\"ds-t\">Ganhar massa</span></label><label class=\"ds-choice\"><span class=\"ds-cbox\"></span><span>Emagrecer</span></label></div></fieldset>",
+      "css": ".ds-ask{border:0;font-family:'Atkinson Hyperlegible','Segoe UI',sans-serif;color:#17284a}.ds-ask legend{display:flex;align-items:center;gap:12px;font-family:Kalam,'Segoe Print',cursive;font-size:1.4rem;line-height:1.2;margin-bottom:4px}.ds-n{display:grid;place-items:center;width:32px;height:32px;border:1.5px solid #17284a;border-radius:50%;font-size:1.15rem;background:#f4f8fc}.ds-choices{display:flex;flex-wrap:wrap;gap:6px 20px;padding-left:44px}.ds-choice{display:inline-flex;align-items:center;gap:10px;min-height:44px;font-weight:700;cursor:pointer}.ds-cbox{width:28px;height:28px;border:1.5px solid #17284a;border-radius:2px;background:#f4f8fc}.ds-cbox-on{background:#f4f8fc;box-shadow:inset 0 0 0 0 #c8322a;position:relative}.ds-cbox-on::after{content:'';position:absolute;width:12px;height:12px;border:3px solid #c8322a;border-width:0 3px 3px 0;transform:translate(8px,2px) rotate(40deg)}.ds-t{background:linear-gradient(#f0e4e7,#f0e4e7) left 85%/100% .42em no-repeat}"
+    },
+    {
+      "name": "Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Labeled text input, 48px, 16px text, red focus outline.",
+      "html": "<div class=\"ds-field\"><label for=\"ds-e\">E-mail</label><input id=\"ds-e\" type=\"email\" placeholder=\"voce@email.com\"></div>",
+      "css": ".ds-field{display:grid;gap:4px;font-family:'Atkinson Hyperlegible','Segoe UI',sans-serif;color:#17284a}.ds-field label{font-weight:700;font-size:.95rem}.ds-field input{width:100%;min-height:48px;padding:10px 12px;border:1.5px solid #17284a;border-radius:3px;background:#f4f8fc;color:#17284a;font:inherit;font-size:1rem}.ds-field input::placeholder{color:#4a5b78}.ds-field input:focus{outline:2.5px solid #c8322a;outline-offset:2px}"
+    },
+    {
+      "name": "Sheet (folha)",
+      "kind": "card",
+      "refersTo": "folha",
+      "description": "The one lifted surface: a loose sheet of paper. Landing sample, today page, forms.",
+      "html": "<div class=\"ds-folha\"><h3>Treino A</h3><p>Peito e triceps</p></div>",
+      "css": ".ds-folha{padding:24px;background:#f4f8fc;border:1.5px solid #17284a;border-radius:3px;box-shadow:0 1px 0 rgba(23,40,74,.18),0 18px 28px -18px rgba(23,40,74,.4);color:#17284a;font-family:'Atkinson Hyperlegible','Segoe UI',sans-serif}.ds-folha h3{font-family:Archivo,'Arial Narrow',sans-serif;font-stretch:78%;font-weight:800;font-size:1.75rem;line-height:1.1}"
+    },
+    {
+      "name": "Exercise Row",
+      "kind": "custom",
+      "refersTo": "set-box",
+      "description": "Ruled list row; done state strikes the name with an irregular red pen line.",
+      "html": "<div class=\"ds-ex\"><span class=\"ds-ex-box\"></span><span><span class=\"ds-ex-nome\">Supino reto</span><span class=\"ds-ex-det\">4 x 8-10 · 60 s</span></span></div>",
+      "css": ".ds-ex{display:grid;grid-template-columns:auto 1fr;gap:14px;min-height:72px;padding:12px 0;border-bottom:1px solid #c3d3e4;font-family:'Atkinson Hyperlegible','Segoe UI',sans-serif;color:#17284a}.ds-ex-box{width:28px;height:28px;margin-top:2px;border:1.5px solid #17284a;border-radius:2px;background:#f4f8fc}.ds-ex-nome{display:inline-block;font-weight:700;line-height:1.25}.ds-ex-det{display:block;font-size:.92rem;color:#4a5b78;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Ruled Summary",
+      "kind": "custom",
+      "refersTo": "folha",
+      "description": "Summary data as ruled rows instead of metric tiles.",
+      "html": "<dl class=\"ds-rol\"><div><dt>Treinos feitos</dt><dd>12</dd></div><div><dt>Esta semana</dt><dd>3</dd></div></dl>",
+      "css": ".ds-rol{display:grid;border-top:1.5px solid #17284a;font-family:'Atkinson Hyperlegible','Segoe UI',sans-serif;color:#17284a}.ds-rol>div{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid #c3d3e4}.ds-rol dt{color:#4a5b78}.ds-rol dd{font-family:Archivo,'Arial Narrow',sans-serif;font-stretch:84%;font-weight:800;font-size:1.5rem;font-variant-numeric:tabular-nums}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Caderno de Treino",
+    "overview": "The product is a lifter's logbook on graph paper. The whole app is one ruled page: a cool blue-white sheet with a faint grid, navy ink for everything written, and a single red pen for everything done, chosen or primary. A set is a 1.5px ink box; ticking it draws a red check, and a finished exercise is struck through with a red line. Structure comes from ruled lines, not boxes and shadows.",
+    "keyCharacteristics": [
+      "Graph-paper ground, 24px minor grid with a stronger line every 120px.",
+      "One red pen (#c8322a) for strikes, checks, the margin rule, focus and the primary action.",
+      "Ruled lines and 1.5px ink outlines instead of cards; shadow reserved for three loose-sheet cases.",
+      "3px radius everywhere (2px on set boxes).",
+      "Ticking a set draws a red pen stroke left to right."
+    ],
+    "rules": [
+      { "name": "The One Pen Rule", "body": "There is one accent and it is red. No second hue, no gradient, no tints other than Red Wash. If something is blue it is ink.", "section": "colors" },
+      { "name": "The Solid Wash Rule", "body": "Red Wash is a solid color, never an alpha overlay, so contrast against text is computed against a real background.", "section": "colors" },
+      { "name": "The Handwriting Has A Job Rule", "body": "Kalam is for the numbered questions and short human notes only. It never sets headings, buttons, labels or body text.", "section": "typography" },
+      { "name": "The Tabular Numbers Rule", "body": "Sets, reps, loads, dates and counts use tabular numerals.", "section": "typography" },
+      { "name": "The Three Sheets Rule", "body": "Shadow belongs to the landing sample page, the dashboard today page and forms. Plan days, lists, weekly strip, buttons and inputs get none.", "section": "elevation" },
+      { "name": "The No Blur Rule", "body": "No decorative blur, glow or backdrop filter.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do express structure with ruled lines: 1.5px ink for outlines and section rules, 1px Grid Strong for row dividers.",
+      "Do use Red Pen only for what is done, chosen, focused or the single primary action per screen; use Red Ink for small red text.",
+      "Do keep radius at 3px (2px on boxes) and borders at 1.5px ink.",
+      "Do keep headings in Archivo 800 at width 78% and body in Atkinson; keep inputs at 16px or more.",
+      "Do make every tappable target 44px or larger and gate hover behind (hover: hover) and (pointer: fine).",
+      "Do honor prefers-reduced-motion.",
+      "Do author new pictograms as SVG symbols in the sprite, in the same front/back figure with a red target region.",
+      "Do show only real content; the sample plan is labeled as an example."
+    ],
+    "donts": [
+      "Don't put an eyebrow, kicker or small label above a heading.",
+      "Don't use emoji or glyph characters as icons; use the authored SVG sprite.",
+      "Don't nest cards inside cards, and don't box plan days, lists or summaries; use rules.",
+      "Don't use gradient text, decorative blur, glow, or any shadow outside the three sheet cases.",
+      "Don't add a second accent color, or an alpha-tinted wash over text.",
+      "Don't invent prices, testimonials, user counts or metric tiles.",
+      "Don't set Kalam on headings, buttons or running text.",
+      "Don't use a dark theme, a hero card, a badge row or a scroll cue."
+    ]
+  }
+}

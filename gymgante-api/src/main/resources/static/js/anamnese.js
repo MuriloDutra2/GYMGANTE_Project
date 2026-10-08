@@ -1,3 +1,19 @@
+// As três perguntas são grupos de caixas de marcar (rádios)
+const lerEscolha = (nome) => (document.querySelector(`input[name="${nome}"]:checked`) || {}).value || '';
+function definirEscolha(nome, valor) {
+    const alvo = [...document.querySelectorAll(`input[name="${nome}"]`)].find((i) => i.value === valor);
+    if (alvo) alvo.checked = true;
+}
+
+// Respostas escolhidas na página inicial (guardadas antes do cadastro)
+function aplicarRespostasIniciais() {
+    try {
+        const pre = JSON.parse(localStorage.getItem('gymgante:pre') || 'null');
+        if (!pre) return;
+        [['objetivo', pre.objetivoPrincipal], ['diasPorSemana', pre.diasPorSemana], ['nivel', pre.nivel]].forEach(([nome, valor]) => definirEscolha(nome, valor));
+    } catch (_) { /* sem respostas guardadas */ }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     const form = document.getElementById('form-anamnese');
     const loadingOverlay = document.getElementById('loading-overlay');
@@ -5,7 +21,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userId = localStorage.getItem('userId');
 
     if (!userId) {
-        showToast('Usuário não logado. Redirecionando...', 'error');
+        // Sem sessão o formulário não envia nada (nem pela barra de endereço)
+        form.addEventListener('submit', (e) => e.preventDefault());
+        showToast('Você precisa entrar para continuar. Redirecionando...', 'error');
         setTimeout(() => {
             window.location.href = 'login.html';
         }, 2000);
@@ -26,13 +44,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Carregar dados existentes para preencher o formulário
             const data = await response.json();
             if (data.objetivoPrincipal) {
-                document.getElementById('objetivo').value = data.objetivoPrincipal;
+                definirEscolha('objetivo', data.objetivoPrincipal);
             }
             if (data.diasPorSemana) {
-                document.getElementById('diasPorSemana').value = data.diasPorSemana;
+                definirEscolha('diasPorSemana', data.diasPorSemana);
             }
             if (data.nivel) {
-                document.getElementById('nivel').value = data.nivel;
+                definirEscolha('nivel', data.nivel);
             }
             if (data.temRestricao) {
                 document.getElementById('temRestricao').checked = data.temRestricao;
@@ -40,11 +58,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else if (response.status === 404) {
             isUpdate = false;
             console.log('ℹ️ Usuário não tem anamnese. Modo: CRIAÇÃO');
+            aplicarRespostasIniciais();
         }
     } catch (error) {
         console.error('Erro ao verificar anamnese existente:', error);
         // Em caso de erro, assume que é criação
         isUpdate = false;
+        aplicarRespostasIniciais();
     }
 
     // Também verificar parâmetro da URL (caso venha do botão "Gerar Novo Treino")
@@ -56,14 +76,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
 
         // Validação
-        const objetivo = document.getElementById('objetivo').value;
-        const diasPorSemana = document.getElementById('diasPorSemana').value;
-        const nivel = document.getElementById('nivel').value;
+        const objetivo = lerEscolha('objetivo');
+        const diasPorSemana = lerEscolha('diasPorSemana');
+        const nivel = lerEscolha('nivel');
 
         if (!objetivo || !diasPorSemana || !nivel) {
-            showToast('Preencha todos os campos obrigatórios.', 'error');
+            const faltando = !objetivo ? 'o objetivo' : (!diasPorSemana ? 'os dias por semana' : 'o nível');
+            showToast(`Escolha ${faltando} para continuar.`, 'error');
             return;
         }
+
+        try { localStorage.removeItem('gymgante:pre'); } catch (_) { /* ignora */ }
 
         // Mostrar loading e manter formulário visível (mas desabilitado)
         loadingOverlay.classList.remove('hidden');
@@ -72,10 +95,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         form.style.pointerEvents = 'none';
         
         // Atualizar mensagem do loading baseado no modo
-        const loadingTitle = loadingOverlay.querySelector('h3');
-        const loadingText = loadingOverlay.querySelector('p');
+        const loadingTitle = loadingOverlay.querySelector('.loading-titulo');
+        const loadingText = loadingOverlay.querySelector('.loading-texto');
         if (loadingTitle) {
-            loadingTitle.textContent = isUpdate ? '🔄 Atualizando seu treino...' : '💪 Montando seu treino...';
+            loadingTitle.textContent = isUpdate ? 'Atualizando seu treino' : 'Montando seu treino';
         }
         if (loadingText) {
             loadingText.textContent = isUpdate 
@@ -115,10 +138,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (data.tipo === 'PLANO_TREINO') {
                     // Atualizar mensagem de sucesso
                     if (loadingTitle) {
-                        loadingTitle.textContent = '✅ Treino gerado com sucesso!';
+                        loadingTitle.textContent = 'Treino pronto';
                     }
                     if (loadingText) {
-                        loadingText.textContent = 'Redirecionando para o seu painel...';
+                        loadingText.textContent = 'Abrindo o seu plano completo...';
                     }
                     
                     // Salvar dados da anamnese e treino
@@ -141,7 +164,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     
                     // Aguardar um pouco antes de redirecionar para mostrar a mensagem
                     setTimeout(() => {
-                        window.location.href = 'dashboard.html';
+                        window.location.href = 'treino.html';
                     }, 1500);
                 } else if (data.tipo === 'AVISO') {
                     loadingOverlay.classList.add('hidden');
@@ -152,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (response.status === 409) {
                 // Se ainda assim der erro 409, forçar modo de atualização
                 if (loadingTitle) {
-                    loadingTitle.textContent = '🔄 Atualizando treino existente...';
+                    loadingTitle.textContent = 'Atualizando seu treino';
                 }
                 if (loadingText) {
                     loadingText.textContent = 'Você já possui um treino. Atualizando...';
@@ -171,7 +194,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const updateData = await updateResponse.json();
                 if (updateResponse.ok && updateData.tipo === 'PLANO_TREINO') {
                     if (loadingTitle) {
-                        loadingTitle.textContent = '✅ Treino atualizado com sucesso!';
+                        loadingTitle.textContent = 'Treino atualizado';
                     }
                     if (loadingText) {
                         loadingText.textContent = 'Redirecionando...';
@@ -190,7 +213,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     
                     showToast('Treino atualizado com sucesso!', 'success', 2000);
                     setTimeout(() => {
-                        window.location.href = 'dashboard.html';
+                        window.location.href = 'treino.html';
                     }, 1500);
                 } else {
                     throw new Error('Erro ao atualizar treino.');

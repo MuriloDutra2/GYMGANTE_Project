@@ -1,0 +1,87 @@
+/* ==========================================================================
+   PLANO COMPLETO: cada dia é uma página do caderno
+   ========================================================================== */
+
+.plano-acoes { display: flex; gap: 12px; flex-wrap: wrap; }
+.plano .saudacao { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+
+.treino-header { display: grid; gap: 6px; margin-bottom: 20px; }
+.treino-header h2 { font-size: clamp(1.8rem, 3.4vw, 2.6rem); }
+.treino-descricao { color: var(--ink-2); max-width: 60ch; }
+
+.treino-dias-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 4vw, 56px) clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+/* cada dia é uma seção da página do caderno: régua grossa em cima, sem caixa */
+.dia-card-treino {
+  padding-top: 14px;
+  border-top: 4px solid var(--ink);
+}
+.dia-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: var(--line) solid var(--ink);
+}
+.dia-header h3 { font-size: 1.7rem; }
+.grupo-muscular { color: var(--ink-2); font-weight: 700; }
+.dia-icones { display: flex; gap: 4px; flex: none; }
+
+.exercicios-lista { display: grid; }
+.exercicio-card { padding: 12px 0; border-bottom: 1px solid var(--grid-strong); }
+.exercicio-card:last-of-type { border-bottom: 0; }
+.exercicio-nome { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.exercicio-nome strong { font-weight: 700; line-height: 1.25; min-width: 0; overflow-wrap: anywhere; }
+.exercicio-obs { overflow-wrap: anywhere; }
+.exercicio-info { display: flex; flex-wrap: wrap; gap: 2px 18px; margin-top: 4px; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+.info-item { display: inline-flex; gap: 6px; }
+.info-label { color: var(--ink-2); }
+.info-value { font-weight: 700; }
+.exercicio-obs { margin-top: 4px; font-size: 0.9rem; color: var(--red-ink); }
+.dia-observacoes { margin-top: 12px; padding-top: 12px; border-top: var(--line) solid var(--ink); font-size: 0.95rem; }
+.dia-observacoes p { color: var(--ink-2); margin-top: 2px; }
+
+/* aviso de restrição e erros */
+.aviso-restricao, .erro-container {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  max-width: 38rem;
+  padding: 24px;
+  background: var(--paper);
+  border: var(--line) solid var(--red);
+  border-radius: var(--radius);
+}
+.aviso-restricao h2 { font-size: 1.8rem; }
+.erro-container pre { white-space: pre-wrap; font-size: 0.85rem; max-width: 100%; overflow: auto; }
+
+/* texto em markdown (reserva) */
+#treino-container .treino-titulo, #treino-container .treino-subtitulo, #treino-container .treino-dia { margin: 18px 0 6px; }
+#treino-container .treino-lista { padding-left: 1.2em; }
+
+/* confirmação */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(244, 248, 252, 0.92);
+}
+.modal-content { display: grid; gap: 12px; max-width: 28rem; padding: 26px; }
+.modal-content h2 { font-size: 1.9rem; }
+.modal-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+
+@media (max-width: 960px) {
+  .treino-dias-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  .dia-icones { display: none; }
+  .modal-actions .btn { flex: 1; }
+}

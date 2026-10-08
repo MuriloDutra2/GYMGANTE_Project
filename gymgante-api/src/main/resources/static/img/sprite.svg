@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- Marca: quatro riscos de contagem cortados por um risco vermelho -->
+  <symbol id="logo-mark" viewBox="0 0 40 40">
+    <g fill="none" stroke-width="3.4" stroke-linecap="round">
+      <path d="M9 8 V31 M16 8 V31 M23 8 V31 M30 8 V31" stroke="currentColor"/>
+      <path d="M3.5 27.5 L36.5 11.5" stroke="var(--red, #c8322a)"/>
+    </g>
+  </symbol>
+
+  <!-- Ícones: um só traço (2px, pontas redondas) -->
+  <symbol id="i-check" viewBox="0 0 24 24">
+    <path d="M4.5 13 L10 18.5 L19.5 5.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24">
+    <path d="M4 12 H19.5 M13.5 6 L19.5 12 L13.5 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="i-back" viewBox="0 0 24 24">
+    <path d="M20 12 H4.5 M10.5 6 L4.5 12 L10.5 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="i-bed" viewBox="0 0 24 24">
+    <path d="M3.5 18.5 V6 M3.5 14 H20.5 V18.5 M3.5 14 V11.5 H11 V14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <!-- Pictogramas de músculo: boneco de frente ou de costas, com a região do grupo em vermelho -->
+  <defs>
+    <g id="fig-front" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="16" cy="5" r="2.8"/>
+      <path d="M10.5 9.5 H21.5 L20.8 19 H11.2 Z"/>
+      <path d="M10 10.5 L7 19 M22 10.5 L25 19"/>
+      <path d="M12.3 19.5 L11.6 29.5 M19.7 19.5 L20.4 29.5"/>
+    </g>
+    <g id="fig-back" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="16" cy="5" r="2.8"/>
+      <path d="M10.5 9.5 H21.5 L20.8 19 H11.2 Z"/>
+      <path d="M10 10.5 L7 19 M22 10.5 L25 19"/>
+      <path d="M12.3 19.5 L11.6 29.5 M19.7 19.5 L20.4 29.5"/>
+      <path d="M16 10 V18.5" stroke-width="1.2" stroke-dasharray="1.4 2"/>
+    </g>
+  </defs>
+
+  <symbol id="m-peito" viewBox="0 0 32 32"><use href="#fig-front"/><path d="M11 10 H21 L20.6 14.8 H11.4 Z" fill="var(--red, #c8322a)"/></symbol>
+  <symbol id="m-ombros" viewBox="0 0 32 32"><use href="#fig-front"/><circle cx="9.6" cy="10.4" r="2.4" fill="var(--red, #c8322a)"/><circle cx="22.4" cy="10.4" r="2.4" fill="var(--red, #c8322a)"/></symbol>
+  <symbol id="m-biceps" viewBox="0 0 32 32"><use href="#fig-front"/><path d="M9.4 12 L8 16 M22.6 12 L24 16" stroke="var(--red, #c8322a)" stroke-width="3.6" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="m-core" viewBox="0 0 32 32"><use href="#fig-front"/><path d="M12 15.8 H20 L19.7 19 H12.3 Z" fill="var(--red, #c8322a)"/></symbol>
+  <symbol id="m-quadriceps" viewBox="0 0 32 32"><use href="#fig-front"/><path d="M12.2 20.4 L11.9 25.4 M19.8 20.4 L20.1 25.4" stroke="var(--red, #c8322a)" stroke-width="3.6" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="m-panturrilha" viewBox="0 0 32 32"><use href="#fig-front"/><path d="M11.8 26 L11.6 29.2 M20.2 26 L20.4 29.2" stroke="var(--red, #c8322a)" stroke-width="3.6" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="m-costas" viewBox="0 0 32 32"><use href="#fig-back"/><path d="M11 10.6 H21 L20.3 17.2 H11.7 Z" fill="var(--red, #c8322a)"/></symbol>
+  <symbol id="m-trapezio" viewBox="0 0 32 32"><use href="#fig-back"/><path d="M16 6.6 L11.8 10.4 H20.2 Z" fill="var(--red, #c8322a)"/></symbol>
+  <symbol id="m-triceps" viewBox="0 0 32 32"><use href="#fig-back"/><path d="M9.4 12 L8 16 M22.6 12 L24 16" stroke="var(--red, #c8322a)" stroke-width="3.6" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="m-gluteos" viewBox="0 0 32 32"><use href="#fig-back"/><path d="M11.4 18.2 H20.6 L20.4 21.8 H11.6 Z" fill="var(--red, #c8322a)"/></symbol>
+  <symbol id="m-posterior" viewBox="0 0 32 32"><use href="#fig-back"/><path d="M12.2 22.4 L11.9 26.6 M19.8 22.4 L20.1 26.6" stroke="var(--red, #c8322a)" stroke-width="3.6" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="m-cardio" viewBox="0 0 32 32"><path d="M3 17 H10 L13 8 L18 25 L21 17 H29" fill="none" stroke="var(--red, #c8322a)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>

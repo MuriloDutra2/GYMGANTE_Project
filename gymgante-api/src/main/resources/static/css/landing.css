@@ -1,0 +1,106 @@
+/* ==========================================================================
+   LANDING: a página inicial no mundo do caderno
+   ========================================================================== */
+
+/* entrada única da primeira dobra: sobe 10px e aparece, em escada de 70ms */
+
+/* seções abaixo: revelam uma vez, quando aparecem (só com JS) */
+.js [data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out); }
+.js [data-reveal].in { opacity: 1; transform: none; }
+
+/* ---------- primeira dobra ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  gap: clamp(32px, 4.5vw, 72px);
+  align-items: start;
+  padding-block: clamp(20px, 4vh, 48px) clamp(56px, 9vh, 104px);
+}
+.hero-texto { display: grid; gap: 22px; align-content: start; }
+.hero h1 { font-size: clamp(2.5rem, 4.9vw, 4.2rem); max-width: 17ch; }
+
+.perguntas { display: grid; gap: 14px; margin-top: 6px; }
+.acao { padding-top: 6px; padding-left: 44px; }
+
+/* ---------- a página de exemplo ---------- */
+.logpage { padding: clamp(18px, 2.4vw, 28px); transform: rotate(0.6deg); }
+.lp-cab { display: grid; gap: 4px; padding-bottom: 14px; border-bottom: var(--line) solid var(--ink); margin-bottom: 4px; }
+.lp-titulo { font-size: clamp(1.6rem, 2.6vw, 2.15rem); }
+.lp-lista { list-style: none; display: grid; }
+.lp-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 16px;
+  align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--grid-strong);
+}
+.lp-nome { font-weight: 700; line-height: 1.25; }
+.lp-serie { grid-column: 1; font-size: 0.92rem; color: var(--ink-2); }
+.lp-caixas { grid-column: 2; grid-row: 1 / span 2; display: flex; gap: 6px; }
+.lp-nota { margin-top: 14px; font-size: 0.9rem; color: var(--ink-2); }
+
+/* ---------- como funciona ---------- */
+.como {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: clamp(28px, 5vw, 80px);
+  padding-block: clamp(56px, 9vw, 120px);
+  border-top: var(--line) solid var(--ink);
+}
+.como-lado { display: grid; gap: 18px; align-content: start; }
+.passos { list-style: none; display: grid; }
+.passos li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--grid-strong);
+}
+.passos li:first-child { padding-top: 4px; }
+.passos li:last-child { border-bottom: 0; }
+.passos h3 { margin-bottom: 4px; }
+.passos p { color: var(--ink-2); }
+
+/* ---------- a semana ---------- */
+.semana {
+  display: grid;
+  gap: 20px;
+  padding-block: clamp(56px, 9vw, 112px);
+  border-top: var(--line) solid var(--ink);
+}
+/* ---------- segurança ---------- */
+.seguranca {
+  display: grid;
+  gap: 22px;
+  padding-block: clamp(56px, 9vw, 112px) clamp(48px, 7vw, 88px);
+  border-top: var(--line) solid var(--ink);
+}
+.seguranca h2 { max-width: 20ch; }
+.seguranca mark {
+  background: linear-gradient(var(--red-wash), var(--red-wash)) left 88% / 100% 0.45em no-repeat;
+  color: inherit;
+  padding: 0;
+  display: inline-block; /* o realce não se parte entre linhas */
+}
+.seguranca p { font-size: 1.15rem; max-width: 52ch; }
+
+/* ---------- celular e tablet ---------- */
+@media (max-width: 960px) {
+  .hero { grid-template-columns: minmax(0, 1fr); }
+  .logpage { transform: none; }
+  .como { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  .hero { padding-block: 8px 48px; }
+  .hero-texto { gap: 14px; }
+  .hero h1 { max-width: none; font-size: clamp(2.2rem, 10.5vw, 2.6rem); }
+  .lede { font-size: 1.05rem; }
+  .perguntas { gap: 6px; }
+  .ask legend { font-size: 1.25rem; margin-bottom: 0; }
+  .ask .choices { gap: 0 18px; }
+  .ask .choices { padding-left: 0; }
+  .acao { padding-left: 0; }
+  .acao .btn { width: 100%; }
+}
