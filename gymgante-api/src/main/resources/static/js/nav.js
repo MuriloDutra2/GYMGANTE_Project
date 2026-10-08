@@ -12,9 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const voltar = document.getElementById('link-voltar');
     if (voltar) {
-        let temTreino = false;
+        // ?update=true significa que o usuário já tem treino (veio de "Gerar Novo Treino")
+        let temTreino = window.location.search.includes('update=true');
         try {
-            temTreino = JSON.parse(localStorage.getItem('treinoData') || '{}').tipo === 'PLANO_TREINO';
+            temTreino = temTreino || JSON.parse(localStorage.getItem('treinoData') || '{}').tipo === 'PLANO_TREINO';
         } catch (_) { /* ignora */ }
         voltar.setAttribute('href', temTreino ? 'treino.html' : 'index.html');
     }

@@ -45,7 +45,12 @@ public ResponseEntity<ErrorResponseDto> handleRuntimeException(RuntimeException 
             .status(HttpStatus.INTERNAL_SERVER_ERROR) // 500
             .body(new ErrorResponseDto("Ocorreu um erro inesperado no servidor."));
 }
-    // Método 2: Tratar erros de dados duplicados (Email/CPF)
+    @ExceptionHandler(DadoDuplicadoException.class)
+    public ResponseEntity<ErrorResponseDto> handleDuplicado(DadoDuplicadoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDto(ex.getMessage()));
+    }
+
+    // Método 2: Tratar erros de dados duplicados (Email/CPF) - rede de segurança para corridas
     
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponseDto> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
@@ -53,9 +58,9 @@ public ResponseEntity<ErrorResponseDto> handleRuntimeException(RuntimeException 
         String detalhe = String.valueOf(ex.getMostSpecificCause().getMessage()).toLowerCase();
         String mensagemErro;
 
-        if (detalhe.contains("email")) {
+        if (detalhe.contains("(email)") || detalhe.contains("email_key") || detalhe.contains("uk_email")) {
             mensagemErro = "O e-mail informado já está cadastrado.";
-        } else if (detalhe.contains("cpf")) {
+        } else if (detalhe.contains("(cpf)") || detalhe.contains("cpf_key") || detalhe.contains("uk_cpf")) {
             mensagemErro = "O CPF informado já está cadastrado.";
         } else {
             mensagemErro = "Violação de dados. Um campo único já existe.";

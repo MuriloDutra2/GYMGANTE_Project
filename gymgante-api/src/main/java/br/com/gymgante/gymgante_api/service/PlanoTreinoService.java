@@ -23,6 +23,10 @@ public class PlanoTreinoService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
+    // Perfil local: devolve um treino de exemplo em vez de chamar o Gemini
+    @Value("${gemini.mock:false}")
+    private boolean mock;
+
     private final RestTemplate restTemplate = criarRestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -34,6 +38,9 @@ public class PlanoTreinoService {
     }
 
     public String gerarPlanoTreino(DadosCadastroAnamnese dados) {
+        if (mock) {
+            return planoDeExemplo(dados);
+        }
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent";
 
         Map<String, Object> requestBody = new HashMap<>();
@@ -68,6 +75,23 @@ public class PlanoTreinoService {
             System.err.println("❌ Falha ao gerar plano: " + e.getClass().getSimpleName() + " - " + e.getMessage());
             throw new PlanoIndisponivelException("Falha ao gerar plano de treino", e);
         }
+    }
+
+    private String planoDeExemplo(DadosCadastroAnamnese dados) {
+        return """
+            {"titulo":"Plano de exemplo - %s","descricao":"Treino fictício do ambiente local (%s, %s).",
+             "dias":[
+              {"nome":"Treino A","grupoMuscular":"Peito e Tríceps","exercicios":[
+                {"nome":"Supino reto","series":"4x","repeticoes":"8-12","descanso":"60-90 s","observacoes":"Controle a descida"},
+                {"nome":"Tríceps corda","series":"3x","repeticoes":"12","descanso":"60 s"}]},
+              {"nome":"Treino B","grupoMuscular":"Costas e Bíceps","exercicios":[
+                {"nome":"Puxada frontal","series":"4x","repeticoes":"10","descanso":"60-90 s"},
+                {"nome":"Rosca direta","series":"3x","repeticoes":"12","descanso":"60 s"}]},
+              {"nome":"Treino C","grupoMuscular":"Pernas","exercicios":[
+                {"nome":"Agachamento livre","series":"4x","repeticoes":"8-10","descanso":"90 s","observacoes":"Mantenha a coluna neutra"},
+                {"nome":"Leg press","series":"3x","repeticoes":"12","descanso":"90 s"}]}
+             ]}
+            """.formatted(dados.objetivoPrincipal(), dados.nivel(), dados.diasPorSemana());
     }
 
     private String limparMarkdown(String texto) {

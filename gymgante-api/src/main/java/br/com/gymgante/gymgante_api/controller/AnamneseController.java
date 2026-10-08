@@ -31,6 +31,10 @@ public class AnamneseController {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body(new DadosPlanoTreino("ERRO", e.getMessage()));
             }
+            if (e.getMessage().contains("não encontrad")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new DadosPlanoTreino("ERRO", e.getMessage()));
+            }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new DadosPlanoTreino("ERRO", "Ocorreu um erro inesperado no servidor."));
         }

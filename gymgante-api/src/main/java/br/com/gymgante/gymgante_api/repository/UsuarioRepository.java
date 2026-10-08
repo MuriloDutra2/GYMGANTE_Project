@@ -20,4 +20,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     // Também vamos precisar deste para o login por CPF
     Usuario findByCpf(String cpf);
 
+    boolean existsByEmail(String email);
+
+    boolean existsByCpf(String cpf);
+
 }

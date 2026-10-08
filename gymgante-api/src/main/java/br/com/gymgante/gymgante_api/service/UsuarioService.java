@@ -9,6 +9,7 @@ import br.com.gymgante.gymgante_api.domain.Usuario;
 import br.com.gymgante.gymgante_api.dto.DadosCadastroUsuario;
 import br.com.gymgante.gymgante_api.dto.DadosLoginUsuario;
 import br.com.gymgante.gymgante_api.dto.UsuarioResponseDto;
+import br.com.gymgante.gymgante_api.exeception.DadoDuplicadoException;
 import br.com.gymgante.gymgante_api.repository.UsuarioRepository;
 
 @Service
@@ -26,14 +27,24 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponseDto cadastrarUsuario(DadosCadastroUsuario dados) {
         
+        String email = dados.email().trim().toLowerCase();
+        String cpf = dados.cpf().replaceAll("\\D", "");
+
+        if (usuarioRepository.existsByEmail(email)) {
+            throw new DadoDuplicadoException("O e-mail informado já está cadastrado.");
+        }
+        if (usuarioRepository.existsByCpf(cpf)) {
+            throw new DadoDuplicadoException("O CPF informado já está cadastrado.");
+        }
+
         // 1. Criptografar a senha
         String senhaCriptografada = passwordEncoder.encode(dados.senha());
 
         // 2. Criar a entidade
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNomeCompleto(dados.nomeCompleto());
-        novoUsuario.setEmail(dados.email().trim().toLowerCase());
-        novoUsuario.setCpf(dados.cpf().replaceAll("\\D", ""));
+        novoUsuario.setEmail(email);
+        novoUsuario.setCpf(cpf);
         novoUsuario.setDataNascimento(dados.dataNascimento());
         novoUsuario.setTelefone(dados.telefone());
         novoUsuario.setSenhaHash(senhaCriptografada);
